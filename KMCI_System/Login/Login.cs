@@ -162,7 +162,7 @@ namespace KMCI_System.Login
 
         private string Authenticate(string email, string password)
         {
-            string conString = "datasource=localhost;username=root;password=;database=kingland;";
+            string conString = "datasource=localhost;username=root;password=;database=kmci_database;";
             string query = "SELECT department FROM user WHERE email = @email AND password = @password;";
 
             try

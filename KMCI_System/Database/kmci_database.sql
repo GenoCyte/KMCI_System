@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 08, 2025 at 03:24 PM
+-- Generation Time: Nov 08, 2025 at 03:49 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -553,6 +553,33 @@ INSERT INTO `quotation_items` (`item_id`, `quotation_id`, `sku_upc`, `pref_vendo
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `id` int(50) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `department` varchar(50) DEFAULT NULL,
+  `position` varchar(50) DEFAULT NULL,
+  `contact` bigint(11) NOT NULL,
+  `status` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `name`, `email`, `password`, `department`, `position`, `contact`, `status`) VALUES
+(1, 'andre', 'andre@gmail.com', '', 'Sales', 'admin', 2147483647, 'Active'),
+(2, 'russel', 'russel@gmail.com', 'russel123', 'Admin', 'admin', 2147483647, 'Active'),
+(8, 'a b', 'c', 'd', 'Purchasing', 'President', 9915221103, 'Inactive'),
+(9, 'aa asd', 'sda', 'QxM5!!ib', 'Logistics', 'President', 280312093, 'Inactive');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `vendor_list`
 --
 
@@ -690,6 +717,12 @@ ALTER TABLE `quotation_items`
   ADD KEY `quotation_items_ibfk_1` (`quotation_id`);
 
 --
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `vendor_list`
 --
 ALTER TABLE `vendor_list`
@@ -794,6 +827,12 @@ ALTER TABLE `quotation`
 --
 ALTER TABLE `quotation_items`
   MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `vendor_list`
