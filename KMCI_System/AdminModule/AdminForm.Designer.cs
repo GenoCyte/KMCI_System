@@ -73,71 +73,80 @@
             // 
             // btnDashboardManagement
             // 
-            btnDashboardManagement.AutoSize = true;
+            btnDashboardManagement.AutoSize = false;
             btnDashboardManagement.Cursor = Cursors.Hand;
             btnDashboardManagement.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnDashboardManagement.Location = new Point(25, 150);
             btnDashboardManagement.Name = "btnDashboardManagement";
-            btnDashboardManagement.Size = new Size(129, 17);
+            btnDashboardManagement.Size = new Size(150, 20);
             btnDashboardManagement.TabIndex = 3;
+            btnDashboardManagement.TextAlign = ContentAlignment.MiddleCenter;
             btnDashboardManagement.Text = "Dashboard Management";
+            btnDashboardManagement.MouseEnter += (s, e) => btnDashboardManagement.ForeColor = Color.FromArgb(0, 120, 215);
+            btnDashboardManagement.MouseLeave += (s, e) => btnDashboardManagement.ForeColor = Color.Black;
             btnDashboardManagement.Click += btnDashboardManagement_Click;
-            // 
             // Line1
             // 
-            Line1.BackColor = SystemColors.ActiveCaptionText;
-            Line1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Line1.Location = new Point(19, 150);
-            Line1.Name = "Line1";
-            Line1.Size = new Size(1, 110);
-            Line1.TabIndex = 4;
+
             // 
             // btnProjectManagement
             // 
-            btnProjectManagement.AutoSize = true;
+            btnProjectManagement.AutoSize = false;
             btnProjectManagement.Cursor = Cursors.Hand;
-            btnProjectManagement    .Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnProjectManagement.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnProjectManagement.Location = new Point(25, 180);
             btnProjectManagement.Name = "btnProjectManagement";
-            btnProjectManagement.Size = new Size(144, 17);
+            btnProjectManagement.Size = new Size(150, 20);
             btnProjectManagement.TabIndex = 5;
+            btnProjectManagement.TextAlign = ContentAlignment.MiddleCenter;
             btnProjectManagement.Text = "Project Management";
+            btnProjectManagement.MouseEnter += (s, e) => btnProjectManagement.ForeColor = Color.FromArgb(0, 120, 215);
+            btnProjectManagement.MouseLeave += (s, e) => btnProjectManagement.ForeColor = Color.Black;
             btnProjectManagement.Click += btnProjectManagement_Click;
             // 
             // btnBudgetAllocationManagement
             // 
-            btnBudgetAllocationManagement.AutoSize = true;
+            btnBudgetAllocationManagement.AutoSize = false;
             btnBudgetAllocationManagement.Cursor = Cursors.Hand;
             btnBudgetAllocationManagement.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnBudgetAllocationManagement.Location = new Point(25, 210);
             btnBudgetAllocationManagement.Name = "btnBudgetAllocationManagement";
-            btnBudgetAllocationManagement.Size = new Size(137, 17);
+            btnBudgetAllocationManagement.Size = new Size(150, 20);
+            btnBudgetAllocationManagement.TextAlign = ContentAlignment.MiddleCenter;
             btnBudgetAllocationManagement.TabIndex = 6;
             btnBudgetAllocationManagement.Text = "Budget Allocation Management";
+            btnBudgetAllocationManagement.MouseEnter += (s, e) => btnBudgetAllocationManagement.ForeColor = Color.FromArgb(0, 120, 215);
+            btnBudgetAllocationManagement.MouseLeave += (s, e) => btnBudgetAllocationManagement.ForeColor = Color.Black;
             btnBudgetAllocationManagement.Click += btnBudgetAllocationManagement_Click;
             // 
             // btnPurchaseRequestManagement
             // 
-            btnPurchaseRequestManagement.AutoSize = true;
+            btnPurchaseRequestManagement.AutoSize = false;
             btnPurchaseRequestManagement.Cursor = Cursors.Hand;
             btnPurchaseRequestManagement.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnPurchaseRequestManagement.Location = new Point(25, 240);
             btnPurchaseRequestManagement.Name = "btnPurchaseRequestManagement";
-            btnPurchaseRequestManagement.Size = new Size(134, 17);
+            btnPurchaseRequestManagement.Size = new Size(150, 20);
             btnPurchaseRequestManagement.TabIndex = 7;
             btnPurchaseRequestManagement.Text = "Purchase Request Management";
+            btnPurchaseRequestManagement.TextAlign = ContentAlignment.MiddleCenter;
+            btnPurchaseRequestManagement.MouseEnter += (s, e) => btnPurchaseRequestManagement.ForeColor = Color.FromArgb(0, 120, 215);
+            btnPurchaseRequestManagement.MouseLeave += (s, e) => btnPurchaseRequestManagement.ForeColor = Color.Black;
             btnPurchaseRequestManagement.Click += btnPurchaseRequestManagement_Click;
             // 
             // btnUserManagement
             // 
-            btnUserManagement.AutoSize = true;
+            btnUserManagement.AutoSize = false;
             btnUserManagement.Cursor = Cursors.Hand;
             btnUserManagement.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnUserManagement.Location = new Point(25, 270);
             btnUserManagement.Name = "btnUserManagement";
-            btnUserManagement.Size = new Size(134, 17);
+            btnUserManagement.Size = new Size(150, 20);
+            btnUserManagement.TextAlign = ContentAlignment.MiddleCenter;
             btnUserManagement.TabIndex = 7;
             btnUserManagement.Text = "User Management";
+            btnUserManagement.MouseEnter += (s, e) => btnUserManagement.ForeColor = Color.FromArgb(0, 120, 215);
+            btnUserManagement.MouseLeave += (s, e) => btnUserManagement.ForeColor = Color.Black;
             btnUserManagement.Click += btnUserManagement_Click;
             // 
             // panel1
@@ -146,7 +155,7 @@
             panel1.BackColor = SystemColors.Control;
             panel1.BorderStyle = BorderStyle.None;
             panel1.Paint += (s, e) =>
-            {
+            {               
                 using (Pen pen = new Pen(Color.FromArgb(160, 160, 160), 2))
                 {
                     e.Graphics.DrawRectangle(pen, 0, 0, panel1.Width - 1, panel1.Height - 1);
@@ -165,9 +174,11 @@
             btnLogOut.Size = new Size(120, 40);
             btnLogOut.TabIndex = 8;
             btnLogOut.Text = "Log Out";
-            btnLogOut.BackColor = SystemColors.Control;
+            btnLogOut.BackColor = Color.Black;
+            btnLogOut.ForeColor = Color.White;
             btnLogOut.FlatAppearance.BorderSize = 2;
-            btnLogOut.FlatAppearance.BorderColor = Color.Gray;
+            btnLogOut.FlatAppearance.BorderColor = Color.White;
+            btnLogOut.Click += btnLogOut_Click;
             // 
             // MainForm
             // 

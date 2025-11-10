@@ -652,7 +652,8 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.P
                         FROM quotation_items qi
                         LEFT JOIN product_list p ON qi.sku_upc = p.sku_upc
                         WHERE qi.quotation_id = @quotation_id
-                        ORDER BY qi.item_id";
+                        GROUP BY qi.sku_upc, qi.quantity, qi.unit_price, qi.sub_total, p.prod_name, p.brand
+                        ORDER BY qi.item_id AND p.prod_name";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {

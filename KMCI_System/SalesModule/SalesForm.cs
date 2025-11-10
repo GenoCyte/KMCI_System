@@ -1,3 +1,5 @@
+﻿using MySql.Data.MySqlClient;
+
 namespace KMCI_System
 {
     public partial class SalesForm : Form
@@ -47,12 +49,42 @@ namespace KMCI_System
         {
             LoadUserControl(new SalesModule.ProductManagementModule.ProductManagement());
         }
-        private void BtnLogOut_Click(object sender, EventArgs e)
+        private void btnLogOut_Click(object sender, EventArgs e)
         {
-            Login.Login loginForm = new Login.Login();  
-            loginForm.Show();
-            this.Close();
+            // mark current user inactive (if any), then return to login UI
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(Session.CurrentUserEmail))
+                {
+                    string conString = "datasource=localhost;username=root;password=;database=kmci_database;";
+                    using (var con = new MySqlConnection(conString))
+                    using (var cmd = new MySqlCommand("UPDATE user SET status = @status WHERE email = @email;", con))
+                    {
+                        cmd.Parameters.AddWithValue("@status", "Inactive");
+                        cmd.Parameters.AddWithValue("@email", Session.CurrentUserEmail);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
 
+                    // clear session
+                    Session.CurrentUserEmail = null!;
+                }
+            }
+            catch
+            {
+                // ignore DB update errors on logout
+            }
+
+            // Show login form and close main.
+            try
+            {
+                Login.Login login = new Login.Login();
+                login.Show();
+            }
+            catch { }
+            this.Hide();
         }
+
     }
 }

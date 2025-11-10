@@ -1,4 +1,5 @@
-﻿namespace KMCI_System
+﻿
+namespace KMCI_System
 {
     partial class PurchasingForm
     {
@@ -142,6 +143,7 @@
             btnLogOut.BackColor = SystemColors.Control;
             btnLogOut.FlatAppearance.BorderSize = 2;
             btnLogOut.FlatAppearance.BorderColor = Color.Gray;
+            btnLogOut.Click += btnLogOut_Click;
             // 
             // MainForm
             // 
@@ -164,6 +166,8 @@
             ResumeLayout(false);
             PerformLayout();
         }
+
+
 
         #endregion
 

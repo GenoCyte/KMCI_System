@@ -40,19 +40,19 @@ namespace KMCI_System.AdminModule
             // header
             // 
             header.AutoSize = true;
-            header.Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);  
+            header.Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);
             header.Location = new Point(15, 15);
-            header.Name = "label1";
-            header.Size = new Size(118, 15);
+            header.Name = "header";
+            header.Size = new Size(88, 28);
             header.TabIndex = 1;
             header.Text = "Projects";
-            //
+            // 
             // line1
-            //
+            // 
+            line1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             line1.BackColor = SystemColors.ActiveCaptionText;
             line1.Location = new Point(0, 60);
             line1.Name = "line1";
-            line1.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
             line1.Size = new Size(150, 1);
             line1.TabIndex = 2;
             // 
@@ -61,8 +61,8 @@ namespace KMCI_System.AdminModule
             header2.AutoSize = true;
             header2.Font = new Font("Segoe UI", 20F, FontStyle.Bold, GraphicsUnit.Point, 0);
             header2.Location = new Point(10, 80);
-            header2.Name = "label1";
-            header2.Size = new Size(118, 15);
+            header2.Name = "header2";
+            header2.Size = new Size(287, 37);
             header2.TabIndex = 1;
             header2.Text = "Project Management";
             // 
@@ -72,23 +72,29 @@ namespace KMCI_System.AdminModule
             subHeader.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             subHeader.ForeColor = SystemColors.GrayText;
             subHeader.Location = new Point(15, 120);
-            subHeader.Name = "label1";
-            subHeader.Size = new Size(118, 15);
+            subHeader.Name = "subHeader";
+            subHeader.Size = new Size(137, 21);
             subHeader.TabIndex = 1;
             subHeader.Text = "Manage Projects";
-            //
+            // 
             // btnAddCompany
-            //
-            btnAddCompany.BackColor = Color.FromArgb(0, 120, 215);
-            btnAddCompany.ForeColor = Color.White;
+            // 
+            btnAddCompany.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnAddCompany.BackColor = Color.Black;
             btnAddCompany.FlatStyle = FlatStyle.Flat;
+            btnAddCompany.ForeColor = Color.White;
             btnAddCompany.Location = new Point(15, 120);
             btnAddCompany.Name = "btnAddCompany";
             btnAddCompany.Size = new Size(120, 30);
             btnAddCompany.TabIndex = 3;
             btnAddCompany.Text = "Add Project";
-            btnAddCompany.Anchor = AnchorStyles.Right | AnchorStyles.Top;
+            btnAddCompany.UseVisualStyleBackColor = false;
+            btnAddCompany.Cursor = Cursors.Hand; // Add hand cursor for better UX
             btnAddCompany.Click += btnAddCompany_Click;
+
+            // Add hover effects
+            btnAddCompany.MouseEnter += (s, e) => btnAddCompany.BackColor = Color.FromArgb(0, 120, 215); // Blue
+            btnAddCompany.MouseLeave += (s, e) => btnAddCompany.BackColor = Color.Black; // Back to black
             // 
             // ProjectManagement
             // 

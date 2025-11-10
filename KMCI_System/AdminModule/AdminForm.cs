@@ -2,6 +2,7 @@
 using KMCI_System.AdminModule.DashboardModule;
 using KMCI_System.AdminModule.PurchaseRequestApprovalModule;
 using KMCI_System.AdminModule.UserManagementModule;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -63,7 +64,43 @@ namespace KMCI_System.AdminModule
 
         private void btnUserManagement_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new UserManagement());
+            LoadUserControl(new UserManagementModule.UserManagementUC());
+        }
+        private void btnLogOut_Click(object sender, EventArgs e)
+        {
+            // mark current user inactive (if any), then return to login UI
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(Session.CurrentUserEmail))
+                {
+                    string conString = "datasource=localhost;username=root;password=;database=kmci_database;";
+                    using (var con = new MySqlConnection(conString))
+                    using (var cmd = new MySqlCommand("UPDATE user SET status = @status WHERE email = @email;", con))
+                    {
+                        cmd.Parameters.AddWithValue("@status", "Inactive");
+                        cmd.Parameters.AddWithValue("@email", Session.CurrentUserEmail);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
+
+                    // clear session
+                    Session.CurrentUserEmail = null!;
+                }
+            }
+            catch
+            {
+                // ignore DB update errors on logout
+            }
+
+            // Show login form and close main.
+            try
+            {
+                Login.Login login = new Login.Login();
+                login.Show();
+            }
+            catch { }
+            this.Hide();
         }
     }
 }

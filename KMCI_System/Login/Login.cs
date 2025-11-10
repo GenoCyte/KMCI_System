@@ -215,6 +215,11 @@ namespace KMCI_System.Login
             fp.ShowDialog();
             this.Hide();
         }
+
+        private void chkRemember_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 

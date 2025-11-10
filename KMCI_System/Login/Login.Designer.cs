@@ -41,145 +41,149 @@ namespace KMCI_System.Login
         /// </summary>
         private void InitializeComponent()
         {
-            this.panelShadow = new System.Windows.Forms.Panel();
-            this.panelMain = new System.Windows.Forms.Panel();
-            this.lblWelcome = new System.Windows.Forms.Label();
-            this.lblSubtext = new System.Windows.Forms.Label();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.txtPassword = new System.Windows.Forms.TextBox();
-            this.chkRemember = new System.Windows.Forms.CheckBox();
-            this.lnkForgotPassword = new System.Windows.Forms.LinkLabel();
-            this.btnLogin = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.panelMain.SuspendLayout();
-            this.SuspendLayout();
+            panelShadow = new Panel();
+            panelMain = new Panel();
+            lblWelcome = new Label();
+            lblSubtext = new Label();
+            txtEmail = new TextBox();
+            txtPassword = new TextBox();
+            chkRemember = new CheckBox();
+            lnkForgotPassword = new LinkLabel();
+            btnLogin = new Button();
+            btnCancel = new Button();
+            panelMain.SuspendLayout();
+            SuspendLayout();
             // 
             // panelShadow
             // 
-            this.panelShadow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.panelShadow.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelShadow.Location = new System.Drawing.Point(178, 118);
-            this.panelShadow.Name = "panelShadow";
-            this.panelShadow.Size = new System.Drawing.Size(560, 380);
-            this.panelShadow.TabIndex = 0;
+            panelShadow.BackColor = Color.FromArgb(40, 0, 0, 0);
+            panelShadow.BorderStyle = BorderStyle.FixedSingle;
+            panelShadow.Location = new Point(178, 118);
+            panelShadow.Name = "panelShadow";
+            panelShadow.Size = new Size(560, 380);
+            panelShadow.TabIndex = 0;
             // 
             // panelMain
             // 
-            this.panelMain.BackColor = System.Drawing.Color.White;
-            this.panelMain.Controls.Add(this.lblWelcome);
-            this.panelMain.Controls.Add(this.lblSubtext);
-            this.panelMain.Controls.Add(this.txtEmail);
-            this.panelMain.Controls.Add(this.txtPassword);
-            this.panelMain.Controls.Add(this.chkRemember);
-            this.panelMain.Controls.Add(this.lnkForgotPassword);
-            this.panelMain.Controls.Add(this.btnLogin);
-            this.panelMain.Controls.Add(this.btnCancel);
-            this.panelMain.Location = new System.Drawing.Point(170, 110);
-            this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(560, 380);
-            this.panelMain.TabIndex = 1;
+            panelMain.BackColor = Color.White;
+            panelMain.Controls.Add(lblWelcome);
+            panelMain.Controls.Add(lblSubtext);
+            panelMain.Controls.Add(txtEmail);
+            panelMain.Controls.Add(txtPassword);
+            panelMain.Controls.Add(lnkForgotPassword);
+            panelMain.Controls.Add(btnLogin);
+            panelMain.Controls.Add(btnCancel);
+            panelMain.Location = new Point(170, 110);
+            panelMain.Name = "panelMain";
+            panelMain.Size = new Size(560, 380);
+            panelMain.TabIndex = 1;
             // 
             // lblWelcome
             // 
-            this.lblWelcome.AutoSize = true;
-            this.lblWelcome.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblWelcome.ForeColor = System.Drawing.Color.Black;
-            this.lblWelcome.Location = new System.Drawing.Point(40, 30);
-            this.lblWelcome.Name = "lblWelcome";
-            this.lblWelcome.Size = new System.Drawing.Size(184, 50);
-            this.lblWelcome.TabIndex = 2;
-            this.lblWelcome.Text = "Welcome";
+            lblWelcome.AutoSize = true;
+            lblWelcome.Font = new Font("Segoe UI", 22F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblWelcome.ForeColor = Color.Black;
+            lblWelcome.Location = new Point(40, 30);
+            lblWelcome.Name = "lblWelcome";
+            lblWelcome.Size = new Size(147, 41);
+            lblWelcome.TabIndex = 2;
+            lblWelcome.Text = "Welcome";
             // 
             // lblSubtext
             // 
-            this.lblSubtext.AutoSize = true;
-            this.lblSubtext.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSubtext.ForeColor = System.Drawing.Color.Gray;
-            this.lblSubtext.Location = new System.Drawing.Point(40, 80);
-            this.lblSubtext.Name = "lblSubtext";
-            this.lblSubtext.Size = new System.Drawing.Size(188, 23);
-            this.lblSubtext.TabIndex = 3;
-            this.lblSubtext.Text = "Sign in to your account";
+            lblSubtext.AutoSize = true;
+            lblSubtext.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblSubtext.ForeColor = Color.Gray;
+            lblSubtext.Location = new Point(40, 80);
+            lblSubtext.Name = "lblSubtext";
+            lblSubtext.Size = new Size(151, 19);
+            lblSubtext.TabIndex = 3;
+            lblSubtext.Text = "Sign in to your account";
             // 
             // txtEmail
             // 
-            this.txtEmail.BackColor = System.Drawing.Color.White;
-            this.txtEmail.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtEmail.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEmail.ForeColor = System.Drawing.Color.Black;
-            this.txtEmail.Location = new System.Drawing.Point(40, 120);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(480, 32);
-            this.txtEmail.TabIndex = 0;
+            txtEmail.BackColor = Color.White;
+            txtEmail.BorderStyle = BorderStyle.FixedSingle;
+            txtEmail.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtEmail.ForeColor = Color.Black;
+            txtEmail.Location = new Point(40, 120);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(480, 27);
+            txtEmail.TabIndex = 0;
             // 
             // txtPassword
             // 
-            this.txtPassword.BackColor = System.Drawing.Color.White;
-            this.txtPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPassword.ForeColor = System.Drawing.Color.Black;
-            this.txtPassword.Location = new System.Drawing.Point(40, 170);
-            this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(480, 32);
-            this.txtPassword.TabIndex = 1;
-            this.txtPassword.UseSystemPasswordChar = true;
-          
+            txtPassword.BackColor = Color.White;
+            txtPassword.BorderStyle = BorderStyle.FixedSingle;
+            txtPassword.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtPassword.ForeColor = Color.Black;
+            txtPassword.Location = new Point(40, 170);
+            txtPassword.Name = "txtPassword";
+            txtPassword.Size = new Size(480, 27);
+            txtPassword.TabIndex = 1;
+            txtPassword.UseSystemPasswordChar = true;
+           
      
-         
-
+            // 
+            // lnkForgotPassword
+            // 
+            lnkForgotPassword.Location = new Point(0, 0);
+            lnkForgotPassword.Name = "lnkForgotPassword";
+            lnkForgotPassword.Size = new Size(100, 23);
+            lnkForgotPassword.TabIndex = 5;
             // 
             // btnLogin
             // 
-            this.btnLogin.BackColor = System.Drawing.Color.Black;
-            this.btnLogin.FlatAppearance.BorderSize = 0;
-            this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLogin.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogin.ForeColor = System.Drawing.Color.White;
-            this.btnLogin.Location = new System.Drawing.Point(40, 250);
-            this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(480, 42);
-            this.btnLogin.TabIndex = 4;
-            this.btnLogin.Text = "Sign In";
-            this.btnLogin.UseVisualStyleBackColor = false;
-            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
+            btnLogin.BackColor = Color.Black;
+            btnLogin.FlatAppearance.BorderSize = 0;
+            btnLogin.FlatStyle = FlatStyle.Flat;
+            btnLogin.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnLogin.ForeColor = Color.White;
+            btnLogin.Location = new Point(40, 250);
+            btnLogin.Name = "btnLogin";
+            btnLogin.Size = new Size(480, 42);
+            btnLogin.TabIndex = 4;
+            btnLogin.Text = "Sign In";
+            btnLogin.UseVisualStyleBackColor = false;
+            btnLogin.Click += btnLogin_Click;
             // 
             // btnCancel
             // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.FlatAppearance.BorderSize = 0;
-            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancel.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnCancel.ForeColor = System.Drawing.Color.Gray;
-            this.btnCancel.Location = new System.Drawing.Point(530, 10);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(20, 20);
-            this.btnCancel.TabIndex = 5;
-            this.btnCancel.Text = "×";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            btnCancel.DialogResult = DialogResult.Cancel;
+            btnCancel.FlatAppearance.BorderSize = 0;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe UI", 9F);
+            btnCancel.ForeColor = Color.Gray;
+            btnCancel.Location = new Point(530, 10);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(20, 20);
+            btnCancel.TabIndex = 5;
+            btnCancel.Text = "×";
+            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Click += btnCancel_Click;
             // 
             // Login
             // 
-            this.AcceptButton = this.btnLogin;
-            this.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(900, 600);
-            this.Controls.Add(this.panelShadow);
-            this.Controls.Add(this.panelMain);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "Login";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Sign in";
-            this.Load += new System.EventHandler(this.Login_Load);
-            this.panelMain.ResumeLayout(false);
-            this.panelMain.PerformLayout();
-            this.ResumeLayout(false);
+            AcceptButton = btnLogin;
+            BackColor = SystemColors.HighlightText;
+            CancelButton = btnCancel;
+            ClientSize = new Size(900, 600);
+            Controls.Add(panelShadow);
+            Controls.Add(panelMain);
+            FormBorderStyle = FormBorderStyle.Fixed3D;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "Login";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Sign in";
+            Load += Login_Load;
+            panelMain.ResumeLayout(false);
+            panelMain.PerformLayout();
+            ResumeLayout(false);
 
         }
 
-  
+
 
         #endregion
 

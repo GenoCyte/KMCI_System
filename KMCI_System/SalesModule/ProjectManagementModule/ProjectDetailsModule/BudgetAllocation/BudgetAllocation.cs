@@ -1129,24 +1129,49 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
                 using (MySqlConnection conn = new MySqlConnection(GetConnectionString()))
                 {
                     conn.Open();
+                    
+                    // First, get the allocation_id from budget_allocation table
+                    int allocationId = 0;
+                    string getAllocationIdQuery = @"SELECT id FROM budget_allocation 
+                                           WHERE project_code = @project_code 
+                                           AND status = 'Approved' 
+                                           LIMIT 1";
+            
+                    using (MySqlCommand getAllocationCmd = new MySqlCommand(getAllocationIdQuery, conn))
+                    {
+                        getAllocationCmd.Parameters.AddWithValue("@project_code", projectCode);
+                        object result = getAllocationCmd.ExecuteScalar();
+                
+                        if (result != null)
+                        {
+                            allocationId = Convert.ToInt32(result);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No approved budget allocation found for this project.", 
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return -1;
+                        }
+                    }
+            
+                    // Now insert the transaction with allocation_id
                     string query = @"INSERT INTO budget_transaction 
-                                    (project_code, transaction_description, transaction_category, transaction_amount, transaction_date) 
-                                    VALUES (@project_code, @transactionDescription, @transactionCategory, @transactionAmount, @transactionDate);
-                                    SELECT LAST_INSERT_ID();";
+                            (allocation_id, project_code, transaction_description, transaction_category, transaction_amount, transaction_date) 
+                            VALUES (@allocation_id, @project_code, @transactionDescription, @transactionCategory, @transactionAmount, @transactionDate);
+                            SELECT LAST_INSERT_ID();";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
+                        cmd.Parameters.AddWithValue("@allocation_id", allocationId);
                         cmd.Parameters.AddWithValue("@project_code", projectCode);
                         cmd.Parameters.AddWithValue("@transactionDescription", description);
                         cmd.Parameters.AddWithValue("@transactionCategory", category);
                         cmd.Parameters.AddWithValue("@transactionAmount", amount);
-                        
-                        // ✅ FIX: Pass DateTime object directly, not string
                         cmd.Parameters.Add("@transactionDate", MySqlDbType.Date).Value = date;
 
                         // Execute and get the new ID
-                        object result = cmd.ExecuteScalar();
-                        return Convert.ToInt32(result);
+                        object insertResult = cmd.ExecuteScalar();
+                        return Convert.ToInt32(insertResult);
                     }
                 }
             }

@@ -110,18 +110,16 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
                 supplier.SpacingAfter = 10;
                 document.Add(supplier);
 
-                // Items Table
-                PdfPTable itemsTable = new PdfPTable(6);
+                // Items Table - Changed to 4 columns
+                PdfPTable itemsTable = new PdfPTable(4);
                 itemsTable.WidthPercentage = 100;
-                itemsTable.SetWidths(new float[] { 15, 10, 10, 40, 10, 15 });
+                itemsTable.SetWidths(new float[] { 20, 15, 15, 50 });
 
                 // Table Headers
                 itemsTable.AddCell(CreateTableHeaderCell("Item #"));
                 itemsTable.AddCell(CreateTableHeaderCell("Qty"));
                 itemsTable.AddCell(CreateTableHeaderCell("Unit"));
                 itemsTable.AddCell(CreateTableHeaderCell("Description"));
-                itemsTable.AddCell(CreateTableHeaderCell("Stock Bal"));
-                itemsTable.AddCell(CreateTableHeaderCell("Remarks"));
 
                 // Get items from database
                 using (MySqlConnection conn = new MySqlConnection(GetConnectionString()))
@@ -169,17 +167,15 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
                                 itemsTable.AddCell(CreateTableCell(qty, smallFont, Element.ALIGN_CENTER));
                                 itemsTable.AddCell(CreateTableCell(unit, smallFont, Element.ALIGN_CENTER));
                                 itemsTable.AddCell(CreateTableCell(description, smallFont));
-                                itemsTable.AddCell(CreateTableCell("0", smallFont, Element.ALIGN_CENTER));
-                                itemsTable.AddCell(CreateTableCell("", smallFont));
                             }
                         }
                     }
                 }
 
-                // Add empty rows to fill the page
+                // Add empty rows to fill the page - Changed to 4 columns
                 for (int i = 0; i < 15; i++)
                 {
-                    for (int j = 0; j < 6; j++)
+                    for (int j = 0; j < 4; j++)
                     {
                         itemsTable.AddCell(CreateTableCell("", smallFont));
                     }
@@ -187,6 +183,27 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
 
                 document.Add(itemsTable);
                 document.Add(new Paragraph(" "));
+
+                // Remarks Box Section
+                PdfPTable remarksTable = new PdfPTable(1);
+                remarksTable.WidthPercentage = 100;
+                remarksTable.SpacingBefore = 10;
+                remarksTable.SpacingAfter = 10;
+
+                // Remarks label and content cell
+                PdfPCell remarksCell = new PdfPCell();
+                remarksCell.Border = iTextSharp.text.Rectangle.BOX;
+                remarksCell.Padding = 10;
+                remarksCell.MinimumHeight = 80f;
+
+                Paragraph remarksContent = new Paragraph();
+                remarksContent.Add(new Phrase("Remarks:\n\n", labelFont));
+                remarksContent.Add(new Phrase("", normalFont)); // Empty space for writing
+
+                remarksCell.AddElement(remarksContent);
+                remarksTable.AddCell(remarksCell);
+
+                document.Add(remarksTable);
 
                 // Signature Section
                 PdfPTable signatureTable = new PdfPTable(3);

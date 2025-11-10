@@ -527,8 +527,8 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
             // Save to database
             try
             {
-                SaveCategory();
-                SaveBudget();
+                int allocationId = SaveBudget(); // Get the new allocation_id
+                SaveCategory(allocationId);      // Pass it to SaveCategory
                 MessageBox.Show("Budget added successfully!", "Success",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;
@@ -541,7 +541,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
             }
         }
 
-        private void SaveBudget() 
+        private int SaveBudget() 
         {
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
@@ -558,10 +558,8 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
                             throw new InvalidOperationException("No quotation selected.");
                         }
                         
-                        // Parse the currency values to decimal
                         decimal bidPrice = decimal.Parse(txtBidPrice.Text.Replace("₱", "").Replace(",", "").Trim());
                         decimal totalCost = decimal.Parse(txtTotalCost.Text.Replace("₱", "").Replace(",", "").Trim());
-                        decimal totalBudget = decimal.Parse(txtTotalBudget.Text.Replace("₱", "").Replace(",", "").Trim());
                         
                         string query = @"
                             INSERT INTO budget_allocation
@@ -574,24 +572,15 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
                             cmd.Parameters.AddWithValue("@quotation_id", selectedQuotation.Id);
                             cmd.Parameters.AddWithValue("@bid_price", bidPrice);
                             cmd.Parameters.AddWithValue("@total_cost", totalCost);
-                            cmd.Parameters.AddWithValue("@status", "For Approval");
+                            cmd.Parameters.AddWithValue("@status", "Pending");
                             cmd.ExecuteNonQuery();
+                            
+                            // Get the last inserted ID
+                            int allocationId = (int)cmd.LastInsertedId;
+                            
+                            transaction.Commit();
+                            return allocationId;
                         }
-
-                        // Update project_list table with the total budget
-                        string updateQuery = @"
-                            UPDATE project_list
-                            SET budget_allocation = @total_budget
-                            WHERE project_code = @projectCode";
-
-                        using (MySqlCommand cmd = new MySqlCommand(updateQuery, conn, transaction))
-                        {
-                            cmd.Parameters.AddWithValue("@projectCode", projectCode);
-                            cmd.Parameters.AddWithValue("@total_budget", totalBudget);
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        transaction.Commit();
                     }
                     catch
                     {
@@ -602,7 +591,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
             }
         }
 
-        private void SaveCategory()
+        private void SaveCategory(int allocationId)
         {
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
@@ -618,14 +607,16 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
                             string categoryName = row.Cells["Name"].Value?.ToString() ?? string.Empty;
                             decimal budget = Convert.ToDecimal(row.Cells["Budget"].Value);
 
+                            // Fixed: Added missing comma after allocation_id
                             string query = @"INSERT INTO budget_category 
-                                           (project_code, category_name, category_budget, 
+                                           (project_code, allocation_id, category_name, category_budget, 
                                             category_expenses, category_remaining) 
-                                           VALUES (@projectCode, @categoryName, @budget, 0, @budget)";
+                                           VALUES (@projectCode, @allocationId, @categoryName, @budget, 0, @budget)";
 
                             using (MySqlCommand cmd = new MySqlCommand(query, conn, transaction))
                             {
                                 cmd.Parameters.AddWithValue("@projectCode", projectCode);
+                                cmd.Parameters.AddWithValue("@allocationId", allocationId);
                                 cmd.Parameters.AddWithValue("@categoryName", categoryName);
                                 cmd.Parameters.AddWithValue("@budget", budget);
                                 cmd.ExecuteNonQuery();

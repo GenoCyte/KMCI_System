@@ -405,13 +405,15 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
             {
                 Text = "Add Product",
                 Location = new Point(950, ypos - 5),
-                BackColor = Color.FromArgb(0, 120, 215),
+                BackColor = Color.Black,
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(120, 30),
                 TabIndex = 3,
                 Anchor = AnchorStyles.Right | AnchorStyles.Top
             };
+            btnAddProduct.MouseEnter += (s, e) => btnAddProduct.BackColor = Color.Blue;
+            btnAddProduct.MouseLeave += (s, e) => btnAddProduct.BackColor = Color.Black;
             btnAddProduct.Click += BtnAddProduct_Click;
             Controls.Add(btnAddProduct);
         }
@@ -1394,7 +1396,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
             {
                 Text = "Clear Form",
                 Location = new Point(610, 10),
-                BackColor = Color.Gray,
+                BackColor = Color.Black,
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(120, 30),
@@ -1408,14 +1410,20 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
             {
                 Text = "Save and Export Quotation",
                 Location = new Point(750, 10),
-                BackColor = Color.FromArgb(0, 120, 215),
+                BackColor = Color.Black,
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(170, 30),
                 TabIndex = 5,
                 Anchor = AnchorStyles.Right | AnchorStyles.Top
             };
-            btnSaveAndExportQuotation.Click += BtnSaveAndExportQuotation_Click;
+            btnSaveAndExportQuotation.MouseEnter += (s, e) => btnSaveAndExportQuotation.BackColor = Color.Blue;
+            btnSaveAndExportQuotation.MouseLeave += (s, e) => btnSaveAndExportQuotation.BackColor = Color.Black;
+            btnSaveAndExportQuotation.MouseEnter += (s, e) => btnSaveAndExportQuotation.BackColor = Color.Blue;
+            btnSaveAndExportQuotation.MouseLeave += (s, e) => btnSaveAndExportQuotation.BackColor = Color.Black;
+            btnSaveAndExportQuotation.MouseEnter += (s, e) => btnSaveAndExportQuotation.BackColor = Color.Blue;
+            btnSaveAndExportQuotation.MouseLeave += (s, e) => btnSaveAndExportQuotation.BackColor = Color.Black;
+                btnSaveAndExportQuotation.Click += BtnSaveAndExportQuotation_Click;
             pnlButtons.Controls.Add(btnSaveAndExportQuotation);
 
             btnSaveQuotation = new Button

@@ -104,16 +104,16 @@ namespace KMCI_System.AdminModule.PurchaseRequestApprovalModule
         {
             if (e.RowIndex >= 0)
             {
-                String projectCode = dgvProject.Rows[e.RowIndex].Cells["ProjectCode"].Value.ToString();
-                LoadUserControl(new PurchaseOrderList(projectCode));
+                int prId = Convert.ToInt32(dgvProject.Rows[e.RowIndex].Cells["Id"].Value);
+                LoadUserControl(new PurchaseRequestDetails(prId));
             }
         }
 
         private void LoadUserControl(UserControl userControl)
         {
-            var purchasingForm = this.FindForm() as PurchasingForm;
+            var adminForm = this.FindForm() as AdminForm;
             // Clear existing controls in panel
-            purchasingForm.panel1.Controls.Clear();
+            adminForm.panel1.Controls.Clear();
 
             // Dispose previous UserControl if exists
             if (currentUserControl != null)
@@ -124,7 +124,7 @@ namespace KMCI_System.AdminModule.PurchaseRequestApprovalModule
             // Set the new UserControl
             currentUserControl = userControl;
             userControl.Dock = DockStyle.Fill; // Fill the entire panel
-            purchasingForm.panel1.Controls.Add(userControl);
+            adminForm.panel1.Controls.Add(userControl);
             userControl.BringToFront();
         }
 

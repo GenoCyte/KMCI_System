@@ -572,7 +572,8 @@ public class KinglandQuotationPdfGenerator
                 FROM quotation_items qi
                 JOIN product_list p ON qi.sku_upc = p.sku_upc
                 WHERE qi.quotation_id = @quotationId
-                ORDER BY qi.item_id";
+                GROUP BY qi.sku_upc, qi.quantity, qi.unit_price, qi.sub_total, p.prod_name, p.brand
+                ORDER BY qi.item_id AND p.prod_name";
 
             using (MySqlCommand cmd = new MySqlCommand(itemsQuery, conn))
             {
@@ -588,7 +589,7 @@ public class KinglandQuotationPdfGenerator
                             Brand = reader["brand"]?.ToString() ?? "",
                             Quantity = Convert.ToInt32(reader["quantity"]),
                             Unit = reader["uom"]?.ToString()?? "",
-                            UnitPrice = Convert.ToDecimal(reader["unit_price"]),
+                            UnitPrice = Convert.ToDecimal(reader["proposal_price"]),
                             Total = Convert.ToDecimal(reader["sub_total"])
                         });
                     }

@@ -140,12 +140,14 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
                 Location = new Point(950, yposition),
                 Size = new Size(120, 30),
                 Font = new Font("Segoe UI", 10F),
-                BackColor = Color.FromArgb(0, 120, 215),
+                BackColor = Color.Black,
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Cursor = Cursors.Hand
             };
             btnSelectAddress.FlatAppearance.BorderSize = 0;
+            btnSelectAddress.MouseEnter += (s, e) => btnSelectAddress.BackColor = Color.FromArgb(0, 120, 215);
+            btnSelectAddress.MouseLeave += (s, e) => btnSelectAddress.BackColor = Color.Black;
             btnSelectAddress.Click += BtnSelectAddress_Click;
             Controls.Add(btnSelectAddress);
 
@@ -242,12 +244,14 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
                 Location = new Point(950, yposition),
                 Size = new Size(130, 30),
                 Font = new Font("Segoe UI", 10F),
-                BackColor = Color.FromArgb(0, 120, 215),
+                BackColor = Color.FromArgb(0, 0, 225),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Cursor = Cursors.Hand
             };
             btnSelectProponent.FlatAppearance.BorderSize = 0;
+            btnSelectProponent.MouseEnter += (s, e) => btnSelectAddress.BackColor = Color.FromArgb(0, 120, 215);
+            btnSelectProponent.MouseLeave += (s, e) => btnSelectAddress.BackColor = Color.Black;
             btnSelectProponent.Click += BtnSelectProponent_Click;
             Controls.Add(btnSelectProponent);
 
@@ -573,23 +577,33 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
                     Text = "Select",
                     Location = new Point(340, 370),
                     Size = new Size(100, 35),
-                    BackColor = Color.FromArgb(0, 120, 215),
+                    BackColor = Color.Black,
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
                     Font = new Font("Segoe UI", 10F)
                 };
                 btnSelect.FlatAppearance.BorderSize = 0;
+                btnSelect.MouseEnter += (s, e) => btnSelectAddress.BackColor = Color.FromArgb(0, 120, 215);
+                btnSelect.MouseLeave += (s, e) => btnSelectAddress.BackColor = Color.Black;
+                btnSelect.Click += BtnSelectAddress_Click;
+                Controls.Add(btnSelect); btnSelect.FlatAppearance.BorderSize = 0;
 
                 Button btnCancel = new Button
                 {
                     Text = "Cancel",
                     Location = new Point(450, 370),
                     Size = new Size(100, 35),
-                    BackColor = Color.Gray,
+                    BackColor = Color.Black,
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
                     Font = new Font("Segoe UI", 10F)
                 };
+                btnCancel.FlatAppearance.BorderSize = 0;
+                btnCancel.MouseEnter += (s, e) => btnSelectAddress.BackColor = Color.FromArgb(0, 120, 215);
+                btnCancel.FlatAppearance.BorderSize = 0;
+                btnCancel.MouseLeave += (s, e) => btnSelectAddress.BackColor = Color.Black;
+                btnCancel.Click += BtnSelectAddress_Click;
+                Controls.Add(btnCancel); btnCancel.FlatAppearance.BorderSize = 0;
                 btnCancel.FlatAppearance.BorderSize = 0;
 
                 btnSelect.Click += (s, ev) =>
@@ -838,5 +852,8 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
             public string Province { get; set; }
             public string Region { get; set; }
         }
+
+
+
     }
 }

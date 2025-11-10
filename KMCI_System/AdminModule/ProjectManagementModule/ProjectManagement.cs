@@ -79,13 +79,13 @@ namespace KMCI_System.AdminModule
             dgvProject.Width = this.ClientSize.Width - 40;
 
             // Style headers
-            dgvProject.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
-            dgvProject.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvProject.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 0 ,139);
+            dgvProject.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvProject.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Regular);
             dgvProject.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dgvProject.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
-            dgvProject.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(240, 240, 240);
-            dgvProject.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvProject.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 0, 139);
+            dgvProject.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.White;
 
             // Style cells
             dgvProject.DefaultCellStyle.BackColor = Color.White;
@@ -114,7 +114,30 @@ namespace KMCI_System.AdminModule
                 Width = 80,
                 FlatStyle = FlatStyle.Flat
             };
+            
             dgvProject.Columns.Add(btnDelete);
+            dgvProject.Columns["Actions"].DefaultCellStyle.ForeColor = Color.Red;
+            dgvProject.Columns["Actions"].DefaultCellStyle.SelectionForeColor = Color.Red;
+
+            // Add this event to your DataGridView to handle button hover effect
+            dgvProject.CellMouseEnter += (s, e) =>
+            {
+                if (e.RowIndex >= 0 && e.ColumnIndex == dgvProject.Columns["Actions"].Index)
+                {
+                    dgvProject.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.DarkRed;
+                    dgvProject.Cursor = Cursors.Hand;
+                }
+            };
+
+            dgvProject.CellMouseLeave += (s, e) =>
+            {
+                if (e.RowIndex >= 0 && e.ColumnIndex == dgvProject.Columns["Actions"].Index)
+                {
+                    dgvProject.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                    dgvProject.Cursor = Cursors.Default;
+                }
+            };
+
 
             // Set column widths
             dgvProject.Columns["ProjectCode"].Width = 150;

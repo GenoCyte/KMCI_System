@@ -656,7 +656,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
             dgvPricing.Columns["InternalPrice"].DefaultCellStyle.Format = "0.00";
             dgvPricing.Columns["AmountToPay"].DefaultCellStyle.Format = "₱0.00";
             dgvPricing.Columns["ABCPrice"].DefaultCellStyle.Format = "₱ 0";
-            dgvPricing.Columns["ProposalPrice"].DefaultCellStyle.Format = "₱ 0";
+            dgvPricing.Columns["ProposalPrice"].DefaultCellStyle.Format = "₱0.00";  // Changed from "₱ 0.00" to "₱0.00"
             dgvPricing.Columns["TotalAmount"].DefaultCellStyle.Format = "₱0.00";
 
             // Events
@@ -1592,9 +1592,9 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                     // Insert quotation items
                     string insertItemQuery = @"
                         INSERT INTO quotation_items 
-                        (quotation_id, sku_upc, pref_vendor, quantity, unit_price, sub_total)
+                        (quotation_id, sku_upc, pref_vendor, quantity, unit_price, proposal_price, sub_total)
                         VALUES 
-                        (@quotation_id, @sku_upc, @pref_vendor, @quantity, @unit_price, @sub_total)";
+                        (@quotation_id, @sku_upc, @pref_vendor, @quantity, @unit_price, @proposal_price, @sub_total)";
 
                     foreach (DataGridViewRow row in dgvPricing.Rows)
                     {
@@ -1606,16 +1606,25 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                                 cmd.Parameters.AddWithValue("@sku_upc", row.Cells["ItemCode"].Value?.ToString() ?? string.Empty);
                                 cmd.Parameters.AddWithValue("@pref_vendor", row.Cells["Supplier"].Value?.ToString() ?? string.Empty);
 
+                                // ✅ FIX: Parse Quantity correctly
                                 int quantity = 0;
                                 if (row.Cells["Quantity"].Value != null)
                                     int.TryParse(row.Cells["Quantity"].Value.ToString(), out quantity);
                                 cmd.Parameters.AddWithValue("@quantity", quantity);
 
+                                // ✅ FIX: Parse unit_price from InternalPrice
                                 decimal unitPrice = 0;
-                                if (row.Cells["ProposalPrice"].Value != null)
-                                    decimal.TryParse(row.Cells["ProposalPrice"].Value.ToString(), out unitPrice);
+                                if (row.Cells["InternalPrice"].Value != null)
+                                    decimal.TryParse(row.Cells["InternalPrice"].Value.ToString(), out unitPrice);
                                 cmd.Parameters.AddWithValue("@unit_price", unitPrice);
 
+                                // ✅ FIX: Parse proposal_price from ProposalPrice (not InternalPrice!)
+                                decimal proposalPrice = 0;
+                                if (row.Cells["ProposalPrice"].Value != null)
+                                    decimal.TryParse(row.Cells["ProposalPrice"].Value.ToString(), out proposalPrice);
+                                cmd.Parameters.AddWithValue("@proposal_price", proposalPrice);
+
+                                // ✅ FIX: Parse sub_total from TotalAmount
                                 decimal subTotal = 0;
                                 if (row.Cells["TotalAmount"].Value != null)
                                     decimal.TryParse(row.Cells["TotalAmount"].Value.ToString(), out subTotal);
