@@ -1,16 +1,8 @@
-﻿using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Asn1.Cmp;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using KMCI_System.Login;
+using MySql.Data.MySqlClient;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.CreateQuotation
+namespace KMCI_System.SalesModule
 {
     public partial class CreateQuotation : UserControl
     {
@@ -100,6 +92,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
         private int ypos;
         private string projectCode;
         private int companyId;
+        private string currentUser; // ✅ Added field for current user ID
 
         public CreateQuotation()
         {
@@ -108,6 +101,10 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
             // Enable vertical scrolling for the entire form
             this.AutoScroll = true;
             this.AutoScrollMinSize = new Size(1100, 700);
+
+            // ✅ TODO: Replace with actual user authentication logic
+            // For example: currentUserId = UserSession.CurrentUserId;
+            currentUser = Session.CurrentUserName;
 
             SetupForm();
             SetupDataGridView();
@@ -338,6 +335,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                 Location = new Point(700, ypos),
                 Width = 350
             };
+            txtPaymentTerms.KeyPress += TxtNumericOnly_KeyPress; // ✅ Add numeric validation
             Controls.Add(txtPaymentTerms);
 
             ypos += 40;
@@ -372,6 +370,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                 Location = new Point(700, ypos),
                 Width = 350
             };
+            txtDeliveryterms.KeyPress += TxtNumericOnly_KeyPress; // ✅ Add numeric validation
             Controls.Add(txtDeliveryterms);
 
             ypos += 40;
@@ -424,12 +423,12 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                 addProductForm.StartPosition = FormStartPosition.CenterParent;
                 addProductForm.Size = new Size(1200, 600);
                 addProductForm.Text = "Add Products to Quotation";
-                
+
                 if (addProductForm.ShowDialog() == DialogResult.OK)
                 {
                     // Get selected products from the form
                     var selectedProducts = addProductForm.GetSelectedProducts();
-                    
+
                     if (selectedProducts != null && selectedProducts.Count > 0)
                     {
                         // Add each selected product to the DataGridView
@@ -467,7 +466,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                                 );
                             }
                         }
-                        
+
                         // Move success message outside the loop
                         MessageBox.Show(
                             $"{selectedProducts.Count} product(s) added to quotation.",
@@ -490,7 +489,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                 Width = 1050,
                 Height = 450, // Initial height, will be adjusted dynamically
                 BorderStyle = BorderStyle.FixedSingle,
-                AutoScroll= true,
+                AutoScroll = true,
                 Padding = new Padding(0, 0, 0, 10) // Padding at bottom for aesthetics
             };
 
@@ -641,7 +640,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
             dgvPricing.Columns["Description"].ReadOnly = true;
             dgvPricing.Columns["Brand"].ReadOnly = true;
             dgvPricing.Columns["AmountToPay"].ReadOnly = true;
-            dgvPricing.Columns["ProposalPrice"].ReadOnly = true;  // Add this line
+            dgvPricing.Columns["ProposalPrice"].ReadOnly = false;  // Add this line
             dgvPricing.Columns["TotalAmount"].ReadOnly = true;
 
             // Alignment
@@ -668,7 +667,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
 
             pnlQuotationPanel.Controls.Add(dgvPricing);
             Controls.Add(pnlQuotationPanel);
-            
+
             // Adjust panel height after adding data
             AdjustPanelHeight();
         }
@@ -738,21 +737,21 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                 decimal bidPercentage = 0;
 
                 // Parse InternalPrice
-                if (row.Cells["InternalPrice"].Value != null && 
+                if (row.Cells["InternalPrice"].Value != null &&
                     decimal.TryParse(row.Cells["InternalPrice"].Value.ToString(), out decimal parsedPrice))
                 {
                     internalPrice = parsedPrice;
                 }
 
                 // Parse Quantity
-                if (row.Cells["Quantity"].Value != null && 
+                if (row.Cells["Quantity"].Value != null &&
                     int.TryParse(row.Cells["Quantity"].Value.ToString(), out int parsedQty))
                 {
                     quantity = parsedQty;
                 }
 
                 // Parse BidPercentage from txtBidPercentage
-                if (!string.IsNullOrWhiteSpace(txtBidPercentage.Text) && 
+                if (!string.IsNullOrWhiteSpace(txtBidPercentage.Text) &&
                     decimal.TryParse(txtBidPercentage.Text, out decimal parsedBidPercentage))
                 {
                     bidPercentage = parsedBidPercentage;
@@ -792,13 +791,13 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                 {
                     if (!row.IsNewRow)
                     {
-                        if (row.Cells["TotalAmount"].Value != null && 
+                        if (row.Cells["TotalAmount"].Value != null &&
                             decimal.TryParse(row.Cells["TotalAmount"].Value.ToString(), out decimal totalAmt))
                         {
                             totalAmountSum += totalAmt;
                         }
 
-                        if (row.Cells["AmountToPay"].Value != null && 
+                        if (row.Cells["AmountToPay"].Value != null &&
                             decimal.TryParse(row.Cells["AmountToPay"].Value.ToString(), out decimal amtToPay))
                         {
                             amountToPaySum += amtToPay;
@@ -834,7 +833,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
 
                 // 5. TAX SUMMARY - EWT (Withholding Tax)
                 decimal ewtPercentage = 0;
-                if (!string.IsNullOrWhiteSpace(txtEwt.Text) && 
+                if (!string.IsNullOrWhiteSpace(txtEwt.Text) &&
                     decimal.TryParse(txtEwt.Text, out decimal parsedEwt))
                 {
                     ewtPercentage = parsedEwt;
@@ -859,7 +858,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
 
                 // 8. CONTINGENCY
                 decimal contingencyPercentage = 0;
-                if (!string.IsNullOrWhiteSpace(txtContingency.Text) && 
+                if (!string.IsNullOrWhiteSpace(txtContingency.Text) &&
                     decimal.TryParse(txtContingency.Text, out decimal parsedContingency))
                 {
                     contingencyPercentage = parsedContingency;
@@ -940,8 +939,23 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                 supplierCell.Items.Add(supplier.VendorName);
             }
 
-            // Set default value to "-"
-            supplierCell.Value = "-";
+            // ✅ NEW: Auto-select lowest price supplier
+            if (suppliers.Count > 0)
+            {
+                // Find supplier with lowest base price
+                var lowestPriceSupplier = suppliers.OrderBy(s => s.BasePrice).First();
+
+                // Set the supplier dropdown to the lowest price supplier
+                supplierCell.Value = lowestPriceSupplier.VendorName;
+
+                // Update Internal Price with the lowest price
+                dgvPricing.Rows[rowIndex].Cells["InternalPrice"].Value = lowestPriceSupplier.BasePrice;
+            }
+            else
+            {
+                // No suppliers found, set default value
+                supplierCell.Value = "-";
+            }
 
             // Store supplier data in the row's Tag for later use
             dgvPricing.Rows[rowIndex].Tag = suppliers;
@@ -996,7 +1010,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
             }
 
             // Update AutoScrollMinSize to accommodate all panels
-            int totalHeight = pnlButtons != null ? pnlButtons.Bottom + 100 : 
+            int totalHeight = pnlButtons != null ? pnlButtons.Bottom + 100 :
                       (pnlPricing != null ? pnlPricing.Bottom + 100 : pnlQuotationPanel.Bottom + 100);
             this.AutoScrollMinSize = new Size(1100, totalHeight);
         }
@@ -1467,7 +1481,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
 
             // Save and get the quotation_id
             int savedQuotationId = SaveQuotation();  // ✅ Now this works
-            
+
             if (savedQuotationId > 0)  // Only export if save was successful
             {
                 ExportToPdf(savedQuotationId);
@@ -1510,6 +1524,50 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
             {
                 MessageBox.Show("Please enter delivery terms.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
+            }
+
+            // ✅ NEW: Validate that ABC Price > Proposal Price for all items
+            foreach (DataGridViewRow row in dgvPricing.Rows)
+            {
+                if (!row.IsNewRow)
+                {
+                    decimal abcPrice = 0;
+                    decimal proposalPrice = 0;
+
+                    // Parse ABC Price
+                    if (row.Cells["ABCPrice"].Value != null)
+                        decimal.TryParse(row.Cells["ABCPrice"].Value.ToString(), out abcPrice);
+
+                    // Parse Proposal Price
+                    if (row.Cells["ProposalPrice"].Value != null)
+                        decimal.TryParse(row.Cells["ProposalPrice"].Value.ToString(), out proposalPrice);
+
+                    // Validate ABC > Proposal Price
+                    if (abcPrice <= proposalPrice)
+                    {
+                        string itemName = row.Cells["Name"].Value?.ToString() ?? "Unknown Item";
+                        MessageBox.Show(
+                            $"Validation Error: ABC Price (₱{abcPrice:N2}) must be greater than Proposal Price (₱{proposalPrice:N2}) for item '{itemName}'.",
+                            "Validation Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
+                        return false;
+                    }
+
+                    // Also check if ABC Price is entered
+                    if (abcPrice == 0)
+                    {
+                        string itemName = row.Cells["Name"].Value?.ToString() ?? "Unknown Item";
+                        MessageBox.Show(
+                            $"Please enter ABC Price for item '{itemName}'.",
+                            "Validation Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
+                        return false;
+                    }
+                }
             }
 
             return true;
@@ -1562,10 +1620,10 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                     string insertQuotationQuery = @"
                         INSERT INTO quotation 
                         (quotation_name, project_code, company_id, address_id, proponent_id, quotation_date, 
-                        validity_period, delivery_time, payment, total_cost, bid_price, bid_percentage, status, remarks)
+                        validity_period, delivery_time, payment, total_cost, bid_price, bid_percentage, status, remarks, created_by)
                         VALUES 
                         (@quotation_name, @project_code, @company_id, @address_id, @proponent_id, @quotation_date, 
-                        @validity_period, @delivery_time, @payment, @total_cost, @bid_price, @bid_percentage, @status, @remarks);
+                        @validity_period, @delivery_time, @payment, @total_cost, @bid_price, @bid_percentage, @status, @remarks, @created_by);
                         SELECT LAST_INSERT_ID();";
 
                     int quotationId = 0;
@@ -1585,6 +1643,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                         cmd.Parameters.AddWithValue("@bid_percentage", txtBidPercentage.Text);
                         cmd.Parameters.AddWithValue("@status", "Pending");
                         cmd.Parameters.AddWithValue("@remarks", txtRemarks.Text);
+                        cmd.Parameters.AddWithValue("@created_by", currentUser);
 
                         quotationId = Convert.ToInt32(cmd.ExecuteScalar());
                     }
@@ -1592,9 +1651,9 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                     // Insert quotation items
                     string insertItemQuery = @"
                         INSERT INTO quotation_items 
-                        (quotation_id, sku_upc, pref_vendor, quantity, unit_price, proposal_price, sub_total)
+                        (quotation_id, sku_upc, pref_vendor, quantity, unit_price, abc, proposal_price, sub_total)
                         VALUES 
-                        (@quotation_id, @sku_upc, @pref_vendor, @quantity, @unit_price, @proposal_price, @sub_total)";
+                        (@quotation_id, @sku_upc, @pref_vendor, @quantity, @unit_price, @abc, @proposal_price, @sub_total)";
 
                     foreach (DataGridViewRow row in dgvPricing.Rows)
                     {
@@ -1618,6 +1677,12 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                                     decimal.TryParse(row.Cells["InternalPrice"].Value.ToString(), out unitPrice);
                                 cmd.Parameters.AddWithValue("@unit_price", unitPrice);
 
+                                // ✅ FIX: Parse abc from ABCPrice
+                                decimal abc = 0;
+                                if (row.Cells["ABCPrice"].Value != null)
+                                    decimal.TryParse(row.Cells["ABCPrice"].Value.ToString(), out abc);
+                                cmd.Parameters.AddWithValue("@abc", abc);
+
                                 // ✅ FIX: Parse proposal_price from ProposalPrice (not InternalPrice!)
                                 decimal proposalPrice = 0;
                                 if (row.Cells["ProposalPrice"].Value != null)
@@ -1638,7 +1703,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                     transaction.Commit();
 
                     MessageBox.Show(
-                        $"Quotation saved successfully!\nQuotation Name: {quotationName}\nQuotation ID: {quotationId}",
+                        $"Quotation saved successfully!",
                         "Success",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
@@ -1742,11 +1807,21 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
             public decimal BasePrice { get; set; }
         }
 
+        // ✅ NEW: Numeric validation method for text boxes (allows only digits)
+        private void TxtNumericOnly_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Allow only digits, backspace, and control keys
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
         // Method to load suppliers from multiple rows in product_list
         private List<SupplierInfo> LoadSuppliersForProduct(string skuUpc)
         {
             List<SupplierInfo> suppliers = new List<SupplierInfo>();
-    
+
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
@@ -1770,8 +1845,8 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.C
                             while (reader.Read())
                             {
                                 string vendorName = reader["pref_vendor"]?.ToString();
-                                decimal basePrice = reader["base_price"] != DBNull.Value 
-                                    ? Convert.ToDecimal(reader["base_price"]) 
+                                decimal basePrice = reader["base_price"] != DBNull.Value
+                                    ? Convert.ToDecimal(reader["base_price"])
                                     : 0;
 
                                 if (!string.IsNullOrEmpty(vendorName))

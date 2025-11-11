@@ -1,13 +1,5 @@
-﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using KMCI_System.Login; // ✅ Add to access Session class
+using MySql.Data.MySqlClient;
 
 namespace KMCI_System.AdminModule.PurchaseRequestApprovalModule
 {
@@ -440,7 +432,11 @@ namespace KMCI_System.AdminModule.PurchaseRequestApprovalModule
                                 projectCode = reader["project_code"]?.ToString() ?? "";
                                 vendorName = reader["vendor_name"]?.ToString() ?? "";
 
-                                txtRequestedBy.Text = "Sales Department";
+                                // ✅ Use logged-in user's name from Session instead of hardcoded value
+                                txtRequestedBy.Text = !string.IsNullOrEmpty(Session.CurrentUserName)
+     ? Session.CurrentUserName
+  : "Unknown User";
+
                                 txtProjectCode.Text = projectCode;
 
                                 decimal grandTotal = reader["grand_total"] != DBNull.Value
@@ -596,6 +592,7 @@ namespace KMCI_System.AdminModule.PurchaseRequestApprovalModule
             if (result == DialogResult.Yes)
             {
                 UpdatePurchaseRequestStatus("Approved");
+                UpdateProductInventory();
             }
         }
 
@@ -657,6 +654,69 @@ namespace KMCI_System.AdminModule.PurchaseRequestApprovalModule
             {
                 MessageBox.Show(
                     $"Error updating purchase request status: {ex.Message}",
+                    "Database Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void UpdateProductInventory()
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(GetConnectionString()))
+                {
+                    conn.Open();
+
+                    // Get all items from the purchase request
+                    string selectQuery = @"
+                        SELECT prod_name, quantity
+                        FROM purchase_request_items
+                        WHERE pr_id = @pr_id";
+
+                    using (MySqlCommand selectCmd = new MySqlCommand(selectQuery, conn))
+                    {
+                        selectCmd.Parameters.AddWithValue("@pr_id", prId);
+
+                        using (MySqlDataReader reader = selectCmd.ExecuteReader())
+                        {
+                            List<(string prodName, int quantity)> items = new List<(string, int)>();
+
+                            while (reader.Read())
+                            {
+                                string prodName = reader["prod_name"]?.ToString() ?? "";
+                                int quantity = reader["quantity"] != DBNull.Value
+                                    ? Convert.ToInt32(reader["quantity"]) : 0;
+
+                                items.Add((prodName, quantity));
+                            }
+
+                            reader.Close();
+
+                            // Update inventory for each product
+                            foreach (var item in items)
+                            {
+                                string updateQuery = @"
+                                    UPDATE product_list 
+                                    SET incoming = incoming + @quantity 
+                                    WHERE prod_name = @prod_name";
+
+                                using (MySqlCommand updateCmd = new MySqlCommand(updateQuery, conn))
+                                {
+                                    updateCmd.Parameters.AddWithValue("@quantity", item.quantity);
+                                    updateCmd.Parameters.AddWithValue("@prod_name", item.prodName);
+
+                                    updateCmd.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error updating product inventory: {ex.Message}",
                     "Database Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

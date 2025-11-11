@@ -1,4 +1,4 @@
-﻿namespace KMCI_System.SalesModule.CompanyManagementModule
+﻿namespace KMCI_System.SalesModule
 {
     partial class CompanyDetails
     {

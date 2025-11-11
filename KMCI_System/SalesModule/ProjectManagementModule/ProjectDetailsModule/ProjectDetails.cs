@@ -1,16 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
+namespace KMCI_System.SalesModule
 {
     public partial class ProjectDetails : UserControl
     {
@@ -130,7 +120,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
                 Text = "Addresses",
                 Location = new Point(20, yposition),
                 Size = new Size(250, 30),
-                Font = new Font("Segoe UI", 14F, FontStyle.Bold)
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point)
             };
             Controls.Add(lblHeaderAddress);
 
@@ -206,19 +196,6 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
             dgvAddresses.Columns.Add("Province", "Province");
             dgvAddresses.Columns.Add("Region", "Region");
 
-            // Add delete button column
-            DataGridViewButtonColumn btnDeleteAddress = new DataGridViewButtonColumn
-            {
-                Name = "DeleteAddress",
-                HeaderText = "Actions",
-                Text = "🗑️",
-                UseColumnTextForButtonValue = true,
-                Width = 80,
-                FlatStyle = FlatStyle.Flat,
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.None
-            };
-            dgvAddresses.Columns.Add(btnDeleteAddress);
-
             dgvAddresses.RowsAdded += (s, e) => AdjustAddressGridHeight();
             dgvAddresses.RowsRemoved += (s, e) => AdjustAddressGridHeight();
 
@@ -232,7 +209,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
                 Text = "Proponents",
                 Location = new Point(20, yposition),
                 Size = new Size(250, 30),
-                Font = new Font("Segoe UI", 14F, FontStyle.Bold)
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point)
             };
             Controls.Add(lblHeaderProponents);
 
@@ -303,19 +280,6 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
             dgvProponents.Columns.Add("ProponentName", "Name");
             dgvProponents.Columns.Add("ProponentEmail", "Email");
             dgvProponents.Columns.Add("ProponentNumber", "Contact Number");
-
-            // Add delete button column
-            DataGridViewButtonColumn btnDeleteProponent = new DataGridViewButtonColumn
-            {
-                Name = "DeleteProponent",
-                HeaderText = "Actions",
-                Text = "🗑️",
-                UseColumnTextForButtonValue = true,
-                Width = 80,
-                FlatStyle = FlatStyle.Flat,
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.None
-            };
-            dgvProponents.Columns.Add(btnDeleteProponent);
 
             dgvProponents.RowsAdded += (s, e) => AdjustProponentGridHeight();
             dgvProponents.RowsRemoved += (s, e) => AdjustProponentGridHeight();
@@ -414,7 +378,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
-                
+
                 // Load address based on address_id from project_list
                 string query = @"
                     SELECT ca.id, ca.house_num, ca.street, ca.subdivision, ca.barangay, ca.city, ca.province, ca.region 
@@ -457,7 +421,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
-                
+
                 // Load proponent based on proponent_id from project_list
                 string query = @"
                     SELECT p.id, p.proponent_name, p.proponent_email, p.proponent_number 
@@ -621,7 +585,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
                                     {
                                         MessageBox.Show("Proponent updated successfully.", "Success",
                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        
+
                                         // Reload the proponents grid to show the selected proponent
                                         LoadProponents();
                                         selectForm.DialogResult = DialogResult.OK;
@@ -791,7 +755,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
                                     {
                                         MessageBox.Show("Address updated successfully.", "Success",
                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        
+
                                         // Reload the addresses grid to show the selected address
                                         LoadAddresses();
                                         selectForm.DialogResult = DialogResult.OK;

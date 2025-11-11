@@ -1,17 +1,7 @@
-﻿using KMCI_System.AdminModule;
-using KMCI_System.AdminModule.DashboardModule;
+﻿using KMCI_System.AdminModule.DashboardModule;
 using KMCI_System.AdminModule.PurchaseRequestApprovalModule;
-using KMCI_System.AdminModule.UserManagementModule;
+using KMCI_System.Login; // ✅ Add to access Session class
 using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KMCI_System.AdminModule
 {
@@ -21,6 +11,17 @@ namespace KMCI_System.AdminModule
         public AdminForm()
         {
             InitializeComponent();
+
+            // ✅ Display logged-in user's name in greeting
+            if (!string.IsNullOrEmpty(Session.CurrentUserName))
+            {
+                lblGreeting.Text = $"Good Day, {Session.CurrentUserName}";
+            }
+            else
+            {
+                lblGreeting.Text = "Good Day, Employee";
+            }
+
             LoadUserControl(new Dashboard());
         }
 
@@ -86,6 +87,8 @@ namespace KMCI_System.AdminModule
 
                     // clear session
                     Session.CurrentUserEmail = null!;
+                    Session.CurrentUserName = null!; // ✅ Clear user name
+                    Session.CurrentUserDepartment = null!; // ✅ Clear department
                 }
             }
             catch

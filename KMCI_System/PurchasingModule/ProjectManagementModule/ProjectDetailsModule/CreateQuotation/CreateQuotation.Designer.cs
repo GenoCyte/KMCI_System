@@ -1,6 +1,6 @@
 ﻿using static System.Windows.Forms.LinkLabel;
 
-namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.CreateQuotation
+namespace KMCI_System.PurchasingModule
 {
     partial class CreateQuotation
     {

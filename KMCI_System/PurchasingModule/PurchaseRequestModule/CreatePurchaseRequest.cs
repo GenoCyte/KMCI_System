@@ -1,13 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KMCI_System.PurchasingModule.PurchaseRequestModule
 {
@@ -497,11 +488,11 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
                                         string productName = row.Cells["Name"].Value?.ToString() ?? "";
                                         string brand = row.Cells["Brand"].Value?.ToString() ?? "";
                                         int quantity = row.Cells["Qty"].Value != null ? Convert.ToInt32(row.Cells["Qty"].Value) : 0;
-                                        
+
                                         string unitPriceStr = row.Cells["UnitPrice"].Value?.ToString()
                                             .Replace("₱", "").Replace(",", "").Trim() ?? "0";
                                         decimal unitPrice = decimal.Parse(unitPriceStr);
-                                        
+
                                         string subTotalStr = row.Cells["SubTotal"].Value?.ToString()
                                             .Replace("₱", "").Replace(",", "").Trim() ?? "0";
                                         decimal subTotal = decimal.Parse(subTotalStr);
@@ -725,8 +716,7 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
                                     ? Convert.ToInt32(reader["quantity"]) : 0;
                                 decimal unitPrice = reader["unit_price"] != DBNull.Value
                                     ? Convert.ToDecimal(reader["unit_price"]) : 0;
-                                decimal subTotal = reader["sub_total"] != DBNull.Value
-                                    ? Convert.ToDecimal(reader["sub_total"]) : 0;
+                                decimal subTotal = quantity * unitPrice;
 
                                 dgvItems.Rows.Add(
                                     skuUpc,

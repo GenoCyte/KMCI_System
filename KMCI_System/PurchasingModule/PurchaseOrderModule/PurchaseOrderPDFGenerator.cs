@@ -1,10 +1,7 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using MySql.Data.MySqlClient;
-using System;
 using System.Diagnostics;
-using System.IO;
-using System.Windows.Forms;
 
 namespace KMCI_System.PurchasingModule.PurchaseOrderModule
 {

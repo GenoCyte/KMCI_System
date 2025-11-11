@@ -1,14 +1,14 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using MySql.Data.MySqlClient;
-using System;
-using System.IO;
-using System.Windows.Forms;
+using KMCI_System.Login;
 
 namespace KMCI_System.PurchasingModule.PurchaseRequestModule
 {
     public class PurchaseRequestPDFGenerator
     {
+        // Make currentUser static so it can be accessed in the static GeneratePR method
+        private static string currentUser = Session.CurrentUserName;
         public static void GeneratePR(string prNumber, string vendorName, string projectCode)
         {
             try
@@ -78,7 +78,7 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
                 // Row 2
                 infoTable.AddCell(CreateInfoCell("", normalFont, false));
                 infoTable.AddCell(CreateInfoCell("", normalFont, false));
-                infoTable.AddCell(CreateInfoCell("Sales", normalFont, true));
+                infoTable.AddCell(CreateInfoCell(currentUser, normalFont, true));
                 infoTable.AddCell(CreateInfoCell(DateTime.Now.ToString("M/d/yyyy"), normalFont, true));
 
                 document.Add(infoTable);
@@ -110,16 +110,21 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
                 supplier.SpacingAfter = 10;
                 document.Add(supplier);
 
-                // Items Table - Changed to 4 columns
-                PdfPTable itemsTable = new PdfPTable(4);
+                // Items Table - Changed to 6 columns (added unit_price and sub_total)
+                PdfPTable itemsTable = new PdfPTable(6);
                 itemsTable.WidthPercentage = 100;
-                itemsTable.SetWidths(new float[] { 20, 15, 15, 50 });
+                itemsTable.SetWidths(new float[] { 15, 10, 10, 35, 15, 15 });
 
                 // Table Headers
                 itemsTable.AddCell(CreateTableHeaderCell("Item #"));
                 itemsTable.AddCell(CreateTableHeaderCell("Qty"));
                 itemsTable.AddCell(CreateTableHeaderCell("Unit"));
                 itemsTable.AddCell(CreateTableHeaderCell("Description"));
+                itemsTable.AddCell(CreateTableHeaderCell("Unit Price"));
+                itemsTable.AddCell(CreateTableHeaderCell("Sub Total"));
+
+                // Variable to track grand total
+                decimal grandTotal = 0;
 
                 // Get items from database
                 using (MySqlConnection conn = new MySqlConnection(GetConnectionString()))
@@ -130,6 +135,8 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
                         SELECT 
                             qi.sku_upc,
                             qi.quantity,
+                            qi.unit_price,
+                            qi.sub_total,
                             p.prod_name,
                             p.uom
                         FROM quotation_items qi
@@ -144,7 +151,7 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
                         query += " AND q.project_code = @project_code";
                     }
 
-                    query += " GROUP BY qi.sku_upc, qi.quantity, p.prod_name, p.uom ORDER BY p.prod_name";
+                    query += " GROUP BY qi.sku_upc, qi.quantity, qi.unit_price, qi.sub_total, p.prod_name, p.uom ORDER BY p.prod_name";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
@@ -156,30 +163,59 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
 
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
+                            // Fix the data reader conversions in the while loop
                             while (reader.Read())
                             {
                                 string sku = reader["sku_upc"]?.ToString() ?? "";
-                                string qty = reader["quantity"]?.ToString() ?? "0";
+                                int qty = Convert.ToInt32(reader["quantity"]);
                                 string unit = reader["uom"]?.ToString() ?? "";
                                 string description = reader["prod_name"]?.ToString() ?? "";
 
+                                decimal unitPrice = reader["unit_price"] != DBNull.Value 
+                                    ? Convert.ToDecimal(reader["unit_price"]) 
+                                    : 0;
+
+                                decimal subTotal = qty * unitPrice;
+
+                                grandTotal += subTotal;
+
                                 itemsTable.AddCell(CreateTableCell(sku, smallFont));
-                                itemsTable.AddCell(CreateTableCell(qty, smallFont, Element.ALIGN_CENTER));
+                                itemsTable.AddCell(CreateTableCell(qty.ToString(), smallFont, Element.ALIGN_CENTER));
                                 itemsTable.AddCell(CreateTableCell(unit, smallFont, Element.ALIGN_CENTER));
                                 itemsTable.AddCell(CreateTableCell(description, smallFont));
+                                itemsTable.AddCell(CreateTableCell($"₱ {unitPrice:N2}", smallFont, Element.ALIGN_RIGHT));
+                                itemsTable.AddCell(CreateTableCell($"₱ {subTotal:N2}", smallFont, Element.ALIGN_RIGHT));
                             }
                         }
                     }
                 }
 
-                // Add empty rows to fill the page - Changed to 4 columns
+                // Add empty rows to fill the page - Changed to 6 columns
                 for (int i = 0; i < 15; i++)
                 {
-                    for (int j = 0; j < 4; j++)
+                    for (int j = 0; j < 6; j++)
                     {
                         itemsTable.AddCell(CreateTableCell("", smallFont));
                     }
                 }
+
+                // Add Grand Total Row
+                PdfPCell grandTotalLabelCell = new PdfPCell(new Phrase("GRAND TOTAL", labelFont));
+                grandTotalLabelCell.Colspan = 5;
+                grandTotalLabelCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                grandTotalLabelCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                grandTotalLabelCell.Padding = 5;
+                grandTotalLabelCell.Border = iTextSharp.text.Rectangle.BOX;
+                grandTotalLabelCell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                itemsTable.AddCell(grandTotalLabelCell);
+
+                PdfPCell grandTotalValueCell = new PdfPCell(new Phrase($"₱ {grandTotal:N2}", labelFont));
+                grandTotalValueCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                grandTotalValueCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                grandTotalValueCell.Padding = 5;
+                grandTotalValueCell.Border = iTextSharp.text.Rectangle.BOX;
+                grandTotalValueCell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                itemsTable.AddCell(grandTotalValueCell);
 
                 document.Add(itemsTable);
                 document.Add(new Paragraph(" "));

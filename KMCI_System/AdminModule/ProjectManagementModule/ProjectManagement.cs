@@ -1,13 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KMCI_System.AdminModule
 {
@@ -79,7 +70,7 @@ namespace KMCI_System.AdminModule
             dgvProject.Width = this.ClientSize.Width - 40;
 
             // Style headers
-            dgvProject.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 0 ,139);
+            dgvProject.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 0, 139);
             dgvProject.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvProject.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Regular);
             dgvProject.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -114,7 +105,7 @@ namespace KMCI_System.AdminModule
                 Width = 80,
                 FlatStyle = FlatStyle.Flat
             };
-            
+
             dgvProject.Columns.Add(btnDelete);
             dgvProject.Columns["Actions"].DefaultCellStyle.ForeColor = Color.Red;
             dgvProject.Columns["Actions"].DefaultCellStyle.SelectionForeColor = Color.Red;

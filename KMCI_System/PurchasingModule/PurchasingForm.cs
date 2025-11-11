@@ -1,4 +1,5 @@
-﻿using KMCI_System.PurchasingModule;
+﻿using KMCI_System.Login; // ✅ Add to access Session class
+using KMCI_System.PurchasingModule;
 using KMCI_System.PurchasingModule.PurchaseOrderModule;
 using MySql.Data.MySqlClient;
 
@@ -7,10 +8,21 @@ namespace KMCI_System
     public partial class PurchasingForm : Form
     {
         private UserControl currentUserControl;
-        
+
         public PurchasingForm()
         {
             InitializeComponent();
+
+            // ✅ Display logged-in user's name in greeting
+            if (!string.IsNullOrEmpty(Session.CurrentUserName))
+            {
+                lblGreeting.Text = $"Good Day, {Session.CurrentUserName}";
+            }
+            else
+            {
+                lblGreeting.Text = "Good Day, Employee";
+            }
+
             LoadUserControl(new ProjectManagement());
         }
 
@@ -36,7 +48,7 @@ namespace KMCI_System
         {
             LoadUserControl(new PurchasingModule.ProjectManagement());
         }
-        
+
         private void btnPrManagement_Click(object sender, EventArgs e)
         {
             LoadUserControl(new PurchasingModule.PurchaseRequestModule.PurchaseRequest());
@@ -66,6 +78,8 @@ namespace KMCI_System
 
                     // clear session
                     Session.CurrentUserEmail = null!;
+                    Session.CurrentUserName = null!; // ✅ Clear user name
+                    Session.CurrentUserDepartment = null!; // ✅ Clear department
                 }
             }
             catch
@@ -83,4 +97,4 @@ namespace KMCI_System
             this.Hide();
         }
     }
-    }
+}

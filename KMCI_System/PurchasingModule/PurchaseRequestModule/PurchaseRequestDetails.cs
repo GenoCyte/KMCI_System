@@ -1,13 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KMCI_System.PurchasingModule.PurchaseRequestModule
 {
@@ -654,7 +645,8 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
                         SELECT 
                             qi.pref_vendor,
                             SUM(qi.quantity) as total_quantity,
-                            SUM(qi.sub_total) as vendor_subtotal
+                            SUM(qi.sub_total) as vendor_subtotal,
+                            qi.unit_price
                         FROM quotation q
                         INNER JOIN quotation_items qi ON q.quotation_id = qi.quotation_id
                         WHERE q.project_code = @project_code AND q.status = 'Approved'
@@ -669,11 +661,12 @@ namespace KMCI_System.PurchasingModule.PurchaseRequestModule
                         {
                             while (reader.Read())
                             {
+                                decimal unitPrice = reader["unit_price"] != DBNull.Value
+                                    ? Convert.ToInt32(reader["unit_price"]) : 0;
                                 string vendorName = reader["pref_vendor"]?.ToString() ?? "N/A";
                                 int totalItems = reader["total_quantity"] != DBNull.Value
                                     ? Convert.ToInt32(reader["total_quantity"]) : 0;
-                                decimal subTotal = reader["vendor_subtotal"] != DBNull.Value
-                                    ? Convert.ToDecimal(reader["vendor_subtotal"]) : 0;
+                                decimal subTotal = unitPrice * totalItems;
 
                                 dgvQuotationItems.Rows.Add(
                                     vendorName,

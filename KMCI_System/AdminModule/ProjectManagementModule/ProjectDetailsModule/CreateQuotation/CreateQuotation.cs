@@ -1,14 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Asn1.Cmp;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.CreateQuotation
 {
@@ -426,12 +416,12 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
                 addProductForm.StartPosition = FormStartPosition.CenterParent;
                 addProductForm.Size = new Size(1200, 600);
                 addProductForm.Text = "Add Products to Quotation";
-                
+
                 if (addProductForm.ShowDialog() == DialogResult.OK)
                 {
                     // Get selected products from the form
                     var selectedProducts = addProductForm.GetSelectedProducts();
-                    
+
                     if (selectedProducts != null && selectedProducts.Count > 0)
                     {
                         // Add each selected product to the DataGridView
@@ -469,7 +459,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
                                 );
                             }
                         }
-                        
+
                         // Move success message outside the loop
                         MessageBox.Show(
                             $"{selectedProducts.Count} product(s) added to quotation.",
@@ -492,7 +482,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
                 Width = 1050,
                 Height = 450, // Initial height, will be adjusted dynamically
                 BorderStyle = BorderStyle.FixedSingle,
-                AutoScroll= true,
+                AutoScroll = true,
                 Padding = new Padding(0, 0, 0, 10) // Padding at bottom for aesthetics
             };
 
@@ -670,7 +660,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
 
             pnlQuotationPanel.Controls.Add(dgvPricing);
             Controls.Add(pnlQuotationPanel);
-            
+
             // Adjust panel height after adding data
             AdjustPanelHeight();
         }
@@ -740,21 +730,21 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
                 decimal bidPercentage = 0;
 
                 // Parse InternalPrice
-                if (row.Cells["InternalPrice"].Value != null && 
+                if (row.Cells["InternalPrice"].Value != null &&
                     decimal.TryParse(row.Cells["InternalPrice"].Value.ToString(), out decimal parsedPrice))
                 {
                     internalPrice = parsedPrice;
                 }
 
                 // Parse Quantity
-                if (row.Cells["Quantity"].Value != null && 
+                if (row.Cells["Quantity"].Value != null &&
                     int.TryParse(row.Cells["Quantity"].Value.ToString(), out int parsedQty))
                 {
                     quantity = parsedQty;
                 }
 
                 // Parse BidPercentage from txtBidPercentage
-                if (!string.IsNullOrWhiteSpace(txtBidPercentage.Text) && 
+                if (!string.IsNullOrWhiteSpace(txtBidPercentage.Text) &&
                     decimal.TryParse(txtBidPercentage.Text, out decimal parsedBidPercentage))
                 {
                     bidPercentage = parsedBidPercentage;
@@ -794,13 +784,13 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
                 {
                     if (!row.IsNewRow)
                     {
-                        if (row.Cells["TotalAmount"].Value != null && 
+                        if (row.Cells["TotalAmount"].Value != null &&
                             decimal.TryParse(row.Cells["TotalAmount"].Value.ToString(), out decimal totalAmt))
                         {
                             totalAmountSum += totalAmt;
                         }
 
-                        if (row.Cells["AmountToPay"].Value != null && 
+                        if (row.Cells["AmountToPay"].Value != null &&
                             decimal.TryParse(row.Cells["AmountToPay"].Value.ToString(), out decimal amtToPay))
                         {
                             amountToPaySum += amtToPay;
@@ -836,7 +826,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
 
                 // 5. TAX SUMMARY - EWT (Withholding Tax)
                 decimal ewtPercentage = 0;
-                if (!string.IsNullOrWhiteSpace(txtEwt.Text) && 
+                if (!string.IsNullOrWhiteSpace(txtEwt.Text) &&
                     decimal.TryParse(txtEwt.Text, out decimal parsedEwt))
                 {
                     ewtPercentage = parsedEwt;
@@ -861,7 +851,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
 
                 // 8. CONTINGENCY
                 decimal contingencyPercentage = 0;
-                if (!string.IsNullOrWhiteSpace(txtContingency.Text) && 
+                if (!string.IsNullOrWhiteSpace(txtContingency.Text) &&
                     decimal.TryParse(txtContingency.Text, out decimal parsedContingency))
                 {
                     contingencyPercentage = parsedContingency;
@@ -998,7 +988,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
             }
 
             // Update AutoScrollMinSize to accommodate all panels
-            int totalHeight = pnlButtons != null ? pnlButtons.Bottom + 100 : 
+            int totalHeight = pnlButtons != null ? pnlButtons.Bottom + 100 :
                       (pnlPricing != null ? pnlPricing.Bottom + 100 : pnlQuotationPanel.Bottom + 100);
             this.AutoScrollMinSize = new Size(1100, totalHeight);
         }
@@ -1423,7 +1413,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
             btnSaveAndExportQuotation.MouseLeave += (s, e) => btnSaveAndExportQuotation.BackColor = Color.Black;
             btnSaveAndExportQuotation.MouseEnter += (s, e) => btnSaveAndExportQuotation.BackColor = Color.Blue;
             btnSaveAndExportQuotation.MouseLeave += (s, e) => btnSaveAndExportQuotation.BackColor = Color.Black;
-                btnSaveAndExportQuotation.Click += BtnSaveAndExportQuotation_Click;
+            btnSaveAndExportQuotation.Click += BtnSaveAndExportQuotation_Click;
             pnlButtons.Controls.Add(btnSaveAndExportQuotation);
 
             btnSaveQuotation = new Button
@@ -1475,7 +1465,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
 
             // Save and get the quotation_id
             int savedQuotationId = SaveQuotation();  // ✅ Now this works
-            
+
             if (savedQuotationId > 0)  // Only export if save was successful
             {
                 ExportToPdf(savedQuotationId);
@@ -1576,114 +1566,114 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule.C
                         @validity_period, @delivery_time, @payment, @total_cost, @bid_price, @bid_percentage, @status, @remarks);
                         SELECT LAST_INSERT_ID();";
 
-            int quotationId = 0;
-            using (MySqlCommand cmd = new MySqlCommand(insertQuotationQuery, conn, transaction))
-            {
-                cmd.Parameters.AddWithValue("@quotation_name", quotationName);
-                cmd.Parameters.AddWithValue("@project_code", projectCode);
-                cmd.Parameters.AddWithValue("@company_id", customerId);
-                cmd.Parameters.AddWithValue("@address_id", addressId);
-                cmd.Parameters.AddWithValue("@proponent_id", proponentId);
-                cmd.Parameters.AddWithValue("@quotation_date", DateTime.Now);
-                cmd.Parameters.AddWithValue("@validity_period", DateTime.Now.AddDays(7));
-                cmd.Parameters.AddWithValue("@payment", txtPaymentTerms.Text);
-                cmd.Parameters.AddWithValue("@delivery_time", txtDeliveryterms.Text);
-                cmd.Parameters.AddWithValue("@total_cost", lblTotalCostNumber.Text.Replace("₱", "").Replace(",", "").Trim());
-                cmd.Parameters.AddWithValue("@bid_price", totalAmount);
-                cmd.Parameters.AddWithValue("@bid_percentage", txtBidPercentage.Text);
-                cmd.Parameters.AddWithValue("@status", "Pending");
-                cmd.Parameters.AddWithValue("@remarks", txtRemarks.Text);
+                    int quotationId = 0;
+                    using (MySqlCommand cmd = new MySqlCommand(insertQuotationQuery, conn, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@quotation_name", quotationName);
+                        cmd.Parameters.AddWithValue("@project_code", projectCode);
+                        cmd.Parameters.AddWithValue("@company_id", customerId);
+                        cmd.Parameters.AddWithValue("@address_id", addressId);
+                        cmd.Parameters.AddWithValue("@proponent_id", proponentId);
+                        cmd.Parameters.AddWithValue("@quotation_date", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@validity_period", DateTime.Now.AddDays(7));
+                        cmd.Parameters.AddWithValue("@payment", txtPaymentTerms.Text);
+                        cmd.Parameters.AddWithValue("@delivery_time", txtDeliveryterms.Text);
+                        cmd.Parameters.AddWithValue("@total_cost", lblTotalCostNumber.Text.Replace("₱", "").Replace(",", "").Trim());
+                        cmd.Parameters.AddWithValue("@bid_price", totalAmount);
+                        cmd.Parameters.AddWithValue("@bid_percentage", txtBidPercentage.Text);
+                        cmd.Parameters.AddWithValue("@status", "Pending");
+                        cmd.Parameters.AddWithValue("@remarks", txtRemarks.Text);
 
-                quotationId = Convert.ToInt32(cmd.ExecuteScalar());
-            }
+                        quotationId = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
 
-            // Insert quotation items
-            string insertItemQuery = @"
+                    // Insert quotation items
+                    string insertItemQuery = @"
                 INSERT INTO quotation_items 
                 (quotation_id, sku_upc, quantity, unit_price, sub_total)
                 VALUES 
                 (@quotation_id, @sku_upc, @quantity, @unit_price, @sub_total)";
 
-            foreach (DataGridViewRow row in dgvPricing.Rows)
-            {
-                if (!row.IsNewRow)
-                {
-                    using (MySqlCommand cmd = new MySqlCommand(insertItemQuery, conn, transaction))
+                    foreach (DataGridViewRow row in dgvPricing.Rows)
                     {
-                        cmd.Parameters.AddWithValue("@quotation_id", quotationId);
-                        cmd.Parameters.AddWithValue("@sku_upc", row.Cells["ItemCode"].Value?.ToString() ?? string.Empty);
-                
-                        int quantity = 0;
-                        if (row.Cells["Quantity"].Value != null)
-                            int.TryParse(row.Cells["Quantity"].Value.ToString(), out quantity);
-                        cmd.Parameters.AddWithValue("@quantity", quantity);
+                        if (!row.IsNewRow)
+                        {
+                            using (MySqlCommand cmd = new MySqlCommand(insertItemQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@quotation_id", quotationId);
+                                cmd.Parameters.AddWithValue("@sku_upc", row.Cells["ItemCode"].Value?.ToString() ?? string.Empty);
 
-                        decimal unitPrice = 0;
-                        if (row.Cells["ProposalPrice"].Value != null)
-                            decimal.TryParse(row.Cells["ProposalPrice"].Value.ToString(), out unitPrice);
-                        cmd.Parameters.AddWithValue("@unit_price", unitPrice);
+                                int quantity = 0;
+                                if (row.Cells["Quantity"].Value != null)
+                                    int.TryParse(row.Cells["Quantity"].Value.ToString(), out quantity);
+                                cmd.Parameters.AddWithValue("@quantity", quantity);
 
-                        decimal subTotal = 0;
-                        if (row.Cells["TotalAmount"].Value != null)
-                            decimal.TryParse(row.Cells["TotalAmount"].Value.ToString(), out subTotal);
-                        cmd.Parameters.AddWithValue("@sub_total", subTotal);
+                                decimal unitPrice = 0;
+                                if (row.Cells["ProposalPrice"].Value != null)
+                                    decimal.TryParse(row.Cells["ProposalPrice"].Value.ToString(), out unitPrice);
+                                cmd.Parameters.AddWithValue("@unit_price", unitPrice);
 
-                        cmd.ExecuteNonQuery();
+                                decimal subTotal = 0;
+                                if (row.Cells["TotalAmount"].Value != null)
+                                    decimal.TryParse(row.Cells["TotalAmount"].Value.ToString(), out subTotal);
+                                cmd.Parameters.AddWithValue("@sub_total", subTotal);
+
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
                     }
+
+                    transaction.Commit();
+
+                    MessageBox.Show(
+                        $"Quotation saved successfully!\nQuotation Name: {quotationName}\nQuotation ID: {quotationId}",
+                        "Success",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+
+                    return quotationId;
+                }
+                catch (Exception ex)
+                {
+                    transaction?.Rollback();
+                    MessageBox.Show(
+                        $"Error saving quotation: {ex.Message}",
+                        "Database Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    return 0;
                 }
             }
-
-            transaction.Commit();
-
-            MessageBox.Show(
-                $"Quotation saved successfully!\nQuotation Name: {quotationName}\nQuotation ID: {quotationId}",
-                "Success",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
-
-            return quotationId;
         }
-        catch (Exception ex)
+
+        private string GenerateQuotationName(MySqlConnection conn, MySqlTransaction transaction)
         {
-            transaction?.Rollback();
-            MessageBox.Show(
-                $"Error saving quotation: {ex.Message}",
-                "Database Error",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error
-            );
-            return 0;
-        }
-    }
-}
-
-private string GenerateQuotationName(MySqlConnection conn, MySqlTransaction transaction)
-{
-    try
-    {
-        // Get the highest RFQ number
-        string maxQuery = @"
+            try
+            {
+                // Get the highest RFQ number
+                string maxQuery = @"
             SELECT MAX(CAST(SUBSTRING(quotation_name, 5) AS UNSIGNED)) 
             FROM quotation 
             WHERE quotation_name LIKE 'RFQ-%'";
 
-        using (MySqlCommand cmd = new MySqlCommand(maxQuery, conn, transaction))
-        {
-            object result = cmd.ExecuteScalar();
-            int nextNumber = (result == null || result == DBNull.Value) ? 1 : Convert.ToInt32(result) + 1;
+                using (MySqlCommand cmd = new MySqlCommand(maxQuery, conn, transaction))
+                {
+                    object result = cmd.ExecuteScalar();
+                    int nextNumber = (result == null || result == DBNull.Value) ? 1 : Convert.ToInt32(result) + 1;
 
-            // Format: RFQ-XXX (3-digit zero-padded)
-            return $"RFQ-{nextNumber:D3}";
+                    // Format: RFQ-XXX (3-digit zero-padded)
+                    return $"RFQ-{nextNumber:D3}";
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error generating quotation name: {ex.Message}");
+                // Fallback to timestamp-based name
+                return $"RFQ-{DateTime.Now:yyyyMMddHHmmss}";
+            }
         }
-    }
-    catch (Exception ex)
-    {
-        System.Diagnostics.Debug.WriteLine($"Error generating quotation name: {ex.Message}");
-        // Fallback to timestamp-based name
-        return $"RFQ-{DateTime.Now:yyyyMMddHHmmss}";
-    }
-}
 
         private void ExportToPdf(int quotationId)
         {
@@ -1744,7 +1734,7 @@ private string GenerateQuotationName(MySqlConnection conn, MySqlTransaction tran
         private List<SupplierInfo> LoadSuppliersForProduct(string skuUpc)
         {
             List<SupplierInfo> suppliers = new List<SupplierInfo>();
-    
+
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
@@ -1768,8 +1758,8 @@ private string GenerateQuotationName(MySqlConnection conn, MySqlTransaction tran
                             while (reader.Read())
                             {
                                 string vendorName = reader["pref_vendor"]?.ToString();
-                                decimal basePrice = reader["base_price"] != DBNull.Value 
-                                    ? Convert.ToDecimal(reader["base_price"]) 
+                                decimal basePrice = reader["base_price"] != DBNull.Value
+                                    ? Convert.ToDecimal(reader["base_price"])
                                     : 0;
 
                                 if (!string.IsNullOrEmpty(vendorName))

@@ -1,10 +1,8 @@
 ﻿using KMCI_System.AdminModule;
+using KMCI_System.InventoryModule;
 using MySql.Data.MySqlClient;
-using System;
-using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace KMCI_System.Login
 {
@@ -135,6 +133,9 @@ namespace KMCI_System.Login
                     case "admin":
                         departmentForm = new AdminForm();
                         break;
+                    case "logistics":
+                        departmentForm = new InventoryForm();
+                        break;
                     default:
                         MessageBox.Show($"No form configured for department: {department}",
                             "Access Denied",
@@ -163,7 +164,7 @@ namespace KMCI_System.Login
         private string Authenticate(string email, string password)
         {
             string conString = "datasource=localhost;username=root;password=;database=kmci_database;";
-            string query = "SELECT department FROM user WHERE email = @email AND password = @password;";
+            string query = "SELECT name, department FROM user WHERE email = @email AND password = @password;";
 
             try
             {
@@ -174,25 +175,34 @@ namespace KMCI_System.Login
                     cmd.Parameters.AddWithValue("@password", password);
 
                     con.Open();
-                    var result = cmd.ExecuteScalar();
-
-                    if (result != null && result != DBNull.Value)
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        string department = result.ToString();
-
-                        // Update user status to Active
-                        using (var upd = new MySqlCommand("UPDATE kingland.user SET status = @status WHERE email = @email;", con))
+                        if (reader.Read())
                         {
-                            upd.Parameters.AddWithValue("@status", "Active");
-                            upd.Parameters.AddWithValue("@email", email);
-                            upd.ExecuteNonQuery();
-                        }
+                            string name = reader["name"] != DBNull.Value ? reader["name"].ToString() : "User";
+                            string department = reader["department"] != DBNull.Value ? reader["department"].ToString() : "";
 
-                        return department;
-                    }
-                    else
-                    {
-                        return null;
+                            // Store user info in Session
+                            Session.CurrentUserName = name;
+                            Session.CurrentUserDepartment = department;
+
+                            // Close reader before updating status
+                            reader.Close();
+
+                            // Update user status to Active
+                            using (var upd = new MySqlCommand("UPDATE user SET status = @status WHERE email = @email;", con))
+                            {
+                                upd.Parameters.AddWithValue("@status", "Active");
+                                upd.Parameters.AddWithValue("@email", email);
+                                upd.ExecuteNonQuery();
+                            }
+
+                            return department;
+                        }
+                        else
+                        {
+                            return null;
+                        }
                     }
                 }
             }
@@ -221,11 +231,4 @@ namespace KMCI_System.Login
 
         }
     }
-}
-
-// Add this to your Session class (or create it if it doesn't exist)
-public static class Session
-{
-    public static string CurrentUserEmail { get; set; }
-    public static string CurrentUserDepartment { get; set; }
 }

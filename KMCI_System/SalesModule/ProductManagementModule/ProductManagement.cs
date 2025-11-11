@@ -1,13 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KMCI_System.SalesModule.ProductManagementModule
 {
@@ -305,7 +296,7 @@ namespace KMCI_System.SalesModule.ProductManagementModule
                 }
                 else
                 {
-                    matchesSearch = 
+                    matchesSearch =
                         row.Cells["SKU"].Value?.ToString().ToLower().Contains(searchText) == true ||
                         row.Cells["Name"].Value?.ToString().ToLower().Contains(searchText) == true ||
                         row.Cells["Description"].Value?.ToString().ToLower().Contains(searchText) == true ||
@@ -323,7 +314,7 @@ namespace KMCI_System.SalesModule.ProductManagementModule
                     matchesBrand = row.Cells["Brand"].Value?.ToString() == selectedBrand;
                 }
 
-                if (selectedCategory == "All Categories" || String.IsNullOrEmpty(selectedCategory)) 
+                if (selectedCategory == "All Categories" || String.IsNullOrEmpty(selectedCategory))
                 {
                     matchesCategory = true;
                 }

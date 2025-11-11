@@ -1,12 +1,8 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System;
-using System.IO;
 using MySql.Data.MySqlClient;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
-namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsModule.CreateQuotation
+namespace KMCI_System.PurchasingModule
 {
     public class KinglandQuotationPdfGenerator
     {
@@ -509,17 +505,17 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                         {
                             throw new Exception($"No quotation found for ID: {quotationId}");
                         }
-                        
+
                         data.QuotationNumber = "KMCI-" + quotationId.ToString("D4");
                         data.QuotationDate = Convert.ToDateTime(reader["quotation_date"]);
 
                         // Quotation To
                         data.QuotationToName = reader["company_name"]?.ToString() ?? "";
-                        
+
                         // Concatenate address, excluding "N/A" parts
                         List<string> addressParts = new List<string>();
-                        string[] addressFields = { "house_num", "street", "barangay", "city", "province"};
-                        
+                        string[] addressFields = { "house_num", "street", "barangay", "city", "province" };
+
                         foreach (string field in addressFields)
                         {
                             string value = reader[field]?.ToString() ?? "";
@@ -528,7 +524,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                                 addressParts.Add(value.Trim());
                             }
                         }
-                        
+
                         data.QuotationToAddress = string.Join(", ", addressParts);
                         data.Attention = reader["proponent_name"]?.ToString() ?? "";
                         data.ContactNumber = reader["proponent_number"]?.ToString() ?? "";
@@ -589,7 +585,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                                 Description = reader["prod_name"]?.ToString() ?? "",
                                 Brand = reader["brand"]?.ToString() ?? "",
                                 Quantity = Convert.ToInt32(reader["quantity"]),
-                                Unit = reader["uom"]?.ToString()?? "",
+                                Unit = reader["uom"]?.ToString() ?? "",
                                 UnitPrice = Convert.ToDecimal(reader["unit_price"]),
                                 Total = Convert.ToDecimal(reader["sub_total"])
                             });

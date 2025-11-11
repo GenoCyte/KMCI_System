@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 
-namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsModule.BudgetAllocation
+namespace KMCI_System.PurchasingModule
 {
     public partial class BudgetAllocation : UserControl
     {
         private int ypos;
         private String projectCode;
-        private Button btnCreateBudget;
 
         //Budget Allocation Details
         private Label lblProjectBudget;
@@ -44,9 +34,9 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
         {
             if (string.IsNullOrWhiteSpace(projectCode))
                 throw new ArgumentException("Project code cannot be null or empty", nameof(projectCode));
-                
+
             this.projectCode = projectCode;
-            
+
             this.AutoScroll = true;
             this.AutoScrollMinSize = new Size(1100, 1000); // Increased for transactions section
 
@@ -62,19 +52,6 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
 
         private void SetupForm()
         {
-            btnCreateBudget = new Button
-            {
-                Text = "Create Budget",
-                Location = new Point(1000, 15),
-                BackColor = Color.FromArgb(0, 120, 215),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(120, 30),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right
-            };
-            btnCreateBudget.Click += BtnCreateBudget_Click;
-            Controls.Add(btnCreateBudget);
-
             ypos = 80;
 
             lblProjectBudget = new Label
@@ -156,7 +133,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             ypos += 60;
         }
 
-        private void BtnCreateBudget_Click(object sender, EventArgs e) 
+        private void BtnCreateBudget_Click(object sender, EventArgs e)
         {
             using (AddBudget addBudgetForm = new AddBudget(projectCode))
             {
@@ -238,11 +215,13 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             dgvCategories.Columns["Remaining"].ReadOnly = true;
 
             // Register event handlers
-            dgvCategories.RowsAdded += (s, e) => {
+            dgvCategories.RowsAdded += (s, e) =>
+            {
                 AdjustCategoryGridHeight();
                 RefreshTransactionCategoryComboBox(); // Refresh combo when category added
             };
-            dgvCategories.RowsRemoved += (s, e) => {
+            dgvCategories.RowsRemoved += (s, e) =>
+            {
                 AdjustCategoryGridHeight();
                 RefreshTransactionCategoryComboBox(); // Refresh combo when category removed
             };
@@ -252,7 +231,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             Controls.Add(dgvCategories);
 
             AdjustCategoryGridHeight();
-            
+
             // Store the starting Y position for transactions (will be updated dynamically)
             ypos += dgvCategories.Height + 40;
             transactionSectionStartY = ypos;
@@ -329,7 +308,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
 
             // Add columns
             dgvTransactions.Columns.Add("Description", "Description");
-            
+
             // Create ComboBox column for Category
             DataGridViewComboBoxColumn categoryColumn = new DataGridViewComboBoxColumn
             {
@@ -340,9 +319,9 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                 DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing // Shows as text until editing
             };
             dgvTransactions.Columns.Add(categoryColumn);
-            
+
             dgvTransactions.Columns.Add("Amount", "Amount");
-            
+
             // Add Date column with date picker
             DataGridViewTextBoxColumn dateColumn = new DataGridViewTextBoxColumn
             {
@@ -354,10 +333,10 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             dgvTransactions.Columns.Add(dateColumn);
 
             // Add ID column to dgvTransactions (hidden)
-            dgvTransactions.Columns.Add(new DataGridViewTextBoxColumn 
-            { 
-                Name = "TransactionID", 
-                Visible = false 
+            dgvTransactions.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "TransactionID",
+                Visible = false
             });
 
             // Add delete button column
@@ -381,7 +360,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             dgvTransactions.EditingControlShowing += DgvTransactions_EditingControlShowing;
 
             // Add validation in CellValidating event
-            dgvTransactions.CellValidating += (s, e) => 
+            dgvTransactions.CellValidating += (s, e) =>
             {
                 if (e.ColumnIndex == dgvTransactions.Columns["Date"].Index)
                 {
@@ -393,7 +372,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                 }
 
                 // Add validation
-                dgvTransactions.CellValidating += (s, e) => 
+                dgvTransactions.CellValidating += (s, e) =>
                 {
                     if (e.ColumnIndex == dgvTransactions.Columns["Amount"].Index)
                     {
@@ -418,10 +397,10 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                 return;
 
             DataGridViewComboBoxColumn categoryColumn = (DataGridViewComboBoxColumn)dgvTransactions.Columns["Category"];
-            
+
             // Clear existing items
             categoryColumn.Items.Clear();
-            
+
             // Add all categories from dgvCategories
             foreach (DataGridViewRow row in dgvCategories.Rows)
             {
@@ -497,13 +476,13 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
 
             // Update transaction header position
             lblTransactionHeader.Location = new Point(20, newYPos);
-            
+
             // Update add transaction button position
             btnAddTransaction.Location = new Point(920, newYPos - 5);
-            
+
             // Update transaction grid position
             dgvTransactions.Location = new Point(20, newYPos + 40);
-            
+
             // Update the stored transaction section start Y
             transactionSectionStartY = newYPos;
 
@@ -515,7 +494,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
         {
             // Calculate total required height
             int totalHeight = dgvTransactions.Location.Y + dgvTransactions.Height + 50; // 50px bottom padding
-            
+
             // Update AutoScrollMinSize
             this.AutoScrollMinSize = new Size(1100, Math.Max(1000, totalHeight));
         }
@@ -549,16 +528,16 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
         {
             // Temporarily disable the event
             dgvCategories.CellValueChanged -= DgvCategories_CellValueChanged;
-            
+
             int rowIndex = dgvCategories.Rows.Add("New Category", 0.00, 0.00, 0.00);
             dgvCategories.Rows[rowIndex].Cells["CategoryName"].Tag = "New Category";
-            
+
             SaveCategoryToDatabase(rowIndex);
             AdjustCategoryGridHeight();
-            
+
             // Re-enable the event
             dgvCategories.CellValueChanged += DgvCategories_CellValueChanged;
-            
+
             dgvCategories.CurrentCell = dgvCategories.Rows[rowIndex].Cells["CategoryName"];
             dgvCategories.BeginEdit(true);
         }
@@ -568,7 +547,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             // Check if there are categories available
             if (dgvCategories.Rows.Count == 0)
             {
-                MessageBox.Show("Please add at least one category before adding transactions.", 
+                MessageBox.Show("Please add at least one category before adding transactions.",
                     "No Categories", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -579,8 +558,8 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             // Add new transaction row with proper defaults
             int rowIndex = dgvTransactions.Rows.Add(
                 "New Transaction",                       // Description
-                dgvCategories.Rows.Count > 0 
-                    ? dgvCategories.Rows[0].Cells["CategoryName"].Value?.ToString() 
+                dgvCategories.Rows.Count > 0
+                    ? dgvCategories.Rows[0].Cells["CategoryName"].Value?.ToString()
                     : "",                                // Category - use first category as default
                 0.00m,                                   // Amount
                 DateTime.Now,                            // Date (DateTime object, not string)
@@ -589,13 +568,13 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
 
             // Store original description for tracking
             dgvTransactions.Rows[rowIndex].Cells["Description"].Tag = "New Transaction";
-            
+
             // ✅ Save to database and retrieve the new ID
             int newTransactionId = SaveTransactionToDatabase(rowIndex);
-            
+
             // Store the transaction ID in the hidden column
             dgvTransactions.Rows[rowIndex].Cells["TransactionID"].Value = newTransactionId;
-            
+
             AdjustTransactionGridHeight();
 
             // Re-enable the event
@@ -658,7 +637,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             DataGridViewRow row = dgvTransactions.Rows[e.RowIndex];
 
             // If amount or category changed, update the category expenses
-            if (e.ColumnIndex == dgvTransactions.Columns["Amount"].Index || 
+            if (e.ColumnIndex == dgvTransactions.Columns["Amount"].Index ||
                 e.ColumnIndex == dgvTransactions.Columns["Category"].Index)
             {
                 UpdateCategoryExpenses();
@@ -689,7 +668,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                 {
                     string category = transactionRow.Cells["Category"].Value?.ToString();
                     decimal amount = 0;
-                    
+
                     if (transactionRow.Cells["Amount"].Value != null)
                         decimal.TryParse(transactionRow.Cells["Amount"].Value.ToString(), out amount);
 
@@ -698,13 +677,13 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                         // Find matching category and add to expenses
                         foreach (DataGridViewRow categoryRow in dgvCategories.Rows)
                         {
-                            if (!categoryRow.IsNewRow && 
+                            if (!categoryRow.IsNewRow &&
                                 categoryRow.Cells["CategoryName"].Value?.ToString() == category)
                             {
                                 decimal currentExpenses = 0;
                                 if (categoryRow.Cells["Expenses"].Value != null)
                                     decimal.TryParse(categoryRow.Cells["Expenses"].Value.ToString(), out currentExpenses);
-                                
+
                                 categoryRow.Cells["Expenses"].Value = currentExpenses + amount;
                                 CalculateRemaining(categoryRow);
                                 break;
@@ -851,13 +830,13 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                 if (result == DialogResult.Yes)
                 {
                     int transactionId = Convert.ToInt32(dgvTransactions.Rows[e.RowIndex].Cells["TransactionID"].Value);
-                    
+
                     // ✅ Delete from database
                     DeleteTransactionFromDatabase(transactionId);
 
                     // Delete from grid
                     dgvTransactions.Rows.RemoveAt(e.RowIndex);
-                    
+
                     // Recalculate category expenses after deleting transaction
                     UpdateCategoryExpenses();
                     CalculateTotals();
@@ -943,9 +922,9 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             try
             {
                 // Get the ORIGINAL category name (before edit)
-                string originalCategoryName = row.Cells["CategoryName"].Tag?.ToString() 
+                string originalCategoryName = row.Cells["CategoryName"].Tag?.ToString()
                                               ?? row.Cells["CategoryName"].Value?.ToString();
-                
+
                 // Get the NEW values
                 string newCategoryName = row.Cells["CategoryName"].Value?.ToString();
                 decimal budget = 0;
@@ -984,7 +963,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                         cmd.ExecuteNonQuery();
                     }
                 }
-                
+
                 // Store the new name as the "original" for next time
                 row.Cells["CategoryName"].Tag = newCategoryName;
             }
@@ -1016,7 +995,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                                 cmd.Parameters.AddWithValue("@categoryName", categoryName);
                                 cmd.ExecuteNonQuery();
                             }
-                            
+
                             // Delete associated transactions
                             using (MySqlCommand cmd = new MySqlCommand(@"
                                 DELETE FROM budget_transaction 
@@ -1027,7 +1006,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                                 cmd.Parameters.AddWithValue("@categoryName", categoryName);
                                 cmd.ExecuteNonQuery();
                             }
-                            
+
                             transaction.Commit();
                         }
                         catch
@@ -1074,7 +1053,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                                     reader["category_expenses"],
                                     reader["category_remaining"]
                                 );
-                                
+
                                 // Store original name for tracking updates
                                 dgvCategories.Rows[rowIndex].Cells["CategoryName"].Tag = reader["category_name"];
                             }
@@ -1084,7 +1063,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
 
                 // Populate the transaction category combobox after loading categories
                 RefreshTransactionCategoryComboBox();
-                
+
                 CalculateTotals();
                 AdjustCategoryGridHeight();
             }
@@ -1140,7 +1119,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                         cmd.Parameters.AddWithValue("@transactionDescription", description);
                         cmd.Parameters.AddWithValue("@transactionCategory", category);
                         cmd.Parameters.AddWithValue("@transactionAmount", amount);
-                        
+
                         // ✅ FIX: Pass DateTime object directly, not string
                         cmd.Parameters.Add("@transactionDate", MySqlDbType.Date).Value = date;
 
@@ -1168,13 +1147,13 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                     System.Diagnostics.Debug.WriteLine("Cannot update transaction: No TransactionID");
                     return;
                 }
-                
+
                 int transactionId = Convert.ToInt32(row.Cells["TransactionID"].Value);
 
                 // Get the NEW values
                 string description = row.Cells["Description"].Value?.ToString() ?? "New Transaction";
                 string category = row.Cells["Category"].Value?.ToString() ?? "";
-                
+
                 decimal amount = 0;
                 if (row.Cells["Amount"].Value != null)
                     decimal.TryParse(row.Cells["Amount"].Value.ToString(), out amount);
@@ -1211,7 +1190,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                         cmd.Parameters.AddWithValue("@description", description);
                         cmd.Parameters.AddWithValue("@category", category);
                         cmd.Parameters.AddWithValue("@amount", amount);
-                        
+
                         // ✅ FIX: Pass DateTime object directly
                         cmd.Parameters.Add("@date", MySqlDbType.Date).Value = date;
 

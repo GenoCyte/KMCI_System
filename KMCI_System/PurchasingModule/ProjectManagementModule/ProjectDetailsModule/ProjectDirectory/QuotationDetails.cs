@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 
-namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsModule.ProjectDirectory
+namespace KMCI_System.PurchasingModule
 {
     public partial class QuotationDetails : UserControl
     {
@@ -56,7 +47,6 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
         private Label lblTotalAmount;
         private TextBox txtTotalAmount;
 
-        private Button btnMarkAsApproved;
         private Button btnBack;
 
         public QuotationDetails(int quotationId, string quotationName, string projectCode)
@@ -502,22 +492,6 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             Controls.Add(txtTotalAmount);
 
             yPos += 40;
-
-            btnMarkAsApproved = new Button
-            {
-                Text = "Mark as Approved",
-                Location = new Point(leftMargin + 870, yPos),
-                Size = new Size(150, 35),
-                Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0),
-                BackColor = Color.FromArgb(0, 120, 215),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnMarkAsApproved.Click += btnMarkAsApproved_Click;
-            Controls.Add(btnMarkAsApproved);
-
-            yPos += btnMarkAsApproved.Height + 10;
 
             Label lblSpace = new Label
             {

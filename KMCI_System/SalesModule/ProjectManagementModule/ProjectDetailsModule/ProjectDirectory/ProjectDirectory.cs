@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsModule.ProjectDirectory;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 
-namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.ProjectDirectory
+namespace KMCI_System.SalesModule
 {
     public partial class ProjectDirectory : UserControl
     {
@@ -24,9 +14,12 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.P
         // Quotation Components
         private Label lblQuotationHeader;
         private DataGridView dgvQuotation;
-        // Purchasing Components
+        // Purchase Request Components
         private Label lblPurchasingHeader;
         private DataGridView dgvPurchaseRequest;
+        //Purchase Order Components
+        private Label lblPurchaseOrderHeader;
+        private DataGridView dgvPurchaseOrder;
 
         public ProjectDirectory(string projectCode)
         {
@@ -36,11 +29,13 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.P
             SetupBudget();
             SetupQuotation();
             SetupPurchaseRequest();
+            SetupPurchaseOrder();
 
             // ✅ Load data from database instead of test data
             LoadBudgetData();
             LoadQuotationData();
             LoadPurchaseRequestData();
+            LoadPurchaseOrderData();
         }
 
         private void LoadUserControlPanel(UserControl userControl)
@@ -263,7 +258,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.P
             // Purchasing Header
             lblPurchasingHeader = new Label
             {
-                Text = "Purchasing",
+                Text = "Purchase Request",
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point),
                 Location = new Point(20, ypos),
                 AutoSize = true
@@ -318,16 +313,16 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.P
             // Add columns
             dgvPurchaseRequest.Columns.Add("PrId", "PR ID");
             dgvPurchaseRequest.Columns.Add("VendorName", "Vendor Name");
-            dgvPurchaseRequest.Columns.Add("QuotationId", "Quotation ID");
             dgvPurchaseRequest.Columns.Add("Quantity", "Total Quantity");
             dgvPurchaseRequest.Columns.Add("GrandTotal", "Grand Total");
+            dgvPurchaseRequest.Columns.Add("Status", "Status");
 
             // Set column widths
             dgvPurchaseRequest.Columns["PrId"].Width = 100;
             dgvPurchaseRequest.Columns["VendorName"].Width = 250;
-            dgvPurchaseRequest.Columns["QuotationId"].Width = 150;
             dgvPurchaseRequest.Columns["Quantity"].Width = 150;
             dgvPurchaseRequest.Columns["GrandTotal"].Width = 200;
+            dgvPurchaseRequest.Columns["Status"].Width = 150;
 
             // Right align numeric columns
             dgvPurchaseRequest.Columns["Quantity"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -368,6 +363,122 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.P
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading purchase request details: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SetupPurchaseOrder()
+        {
+            // Purchasing Header
+            lblPurchaseOrderHeader = new Label
+            {
+                Text = "Purchase Order",
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point),
+                Location = new Point(20, ypos),
+                AutoSize = true
+            };
+            Controls.Add(lblPurchaseOrderHeader);
+
+            ypos += 40;
+
+            dgvPurchaseOrder = new DataGridView
+            {
+                Location = new Point(20, ypos),
+                Width = 1050,
+                Height = 200,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                ReadOnly = true,
+                BackgroundColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle,
+                RowHeadersVisible = false,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                Font = new Font("Segoe UI", 9),
+                ColumnHeadersHeight = 40,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing,
+                RowTemplate = { Height = 40 },
+                AllowUserToResizeRows = false,
+                AllowUserToResizeColumns = true,
+                EnableHeadersVisualStyles = false,
+                ScrollBars = ScrollBars.Vertical
+            };
+
+            // Style headers
+            dgvPurchaseOrder.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
+            dgvPurchaseOrder.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvPurchaseOrder.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Regular);
+            dgvPurchaseOrder.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvPurchaseOrder.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
+            dgvPurchaseOrder.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(240, 240, 240);
+            dgvPurchaseOrder.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
+
+            // Style cells
+            dgvPurchaseOrder.DefaultCellStyle.BackColor = Color.White;
+            dgvPurchaseOrder.DefaultCellStyle.Padding = new Padding(10, 5, 10, 5);
+            dgvPurchaseOrder.DefaultCellStyle.SelectionBackColor = Color.FromArgb(230, 240, 250);
+            dgvPurchaseOrder.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvPurchaseOrder.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
+
+            // Enable grid lines
+            dgvPurchaseOrder.GridColor = Color.FromArgb(220, 220, 220);
+            dgvPurchaseOrder.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+
+            // Add columns
+            dgvPurchaseOrder.Columns.Add("PoId", "PO ID");
+            dgvPurchaseOrder.Columns.Add("PoName", "PO Name");
+            dgvPurchaseOrder.Columns.Add("VendorName", "Vendor Name");
+            dgvPurchaseOrder.Columns.Add("Quantity", "Total Quantity");
+            dgvPurchaseOrder.Columns.Add("GrandTotal", "Grand Total");
+            dgvPurchaseOrder.Columns.Add("PoDate", "Date");
+            dgvPurchaseOrder.Columns.Add("Status", "Status");
+
+            // Set column widths (7 columns total, width: 1050px)
+            dgvPurchaseOrder.Columns["PoId"].Width = 80;
+            dgvPurchaseOrder.Columns["PoName"].Width = 180;
+            dgvPurchaseOrder.Columns["VendorName"].Width = 200;
+            dgvPurchaseOrder.Columns["Quantity"].Width = 130;
+            dgvPurchaseOrder.Columns["GrandTotal"].Width = 150;
+            dgvPurchaseOrder.Columns["PoDate"].Width = 150;
+            dgvPurchaseOrder.Columns["Status"].Width = 160;
+
+            // Right align numeric columns
+            dgvPurchaseOrder.Columns["Quantity"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvPurchaseOrder.Columns["GrandTotal"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            // Register event handlers
+            dgvPurchaseOrder.CellClick += dgvPurchaseOrder_CellContentClick;
+
+            Controls.Add(dgvPurchaseOrder);
+
+            // Store the starting Y position for transactions (will be updated dynamically)
+            ypos += dgvPurchaseOrder.Height + 40;
+        }
+
+        private void dgvPurchaseOrder_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Validate row index (ignore header clicks)
+            if (e.RowIndex < 0)
+                return;
+
+            try
+            {
+                // Get the PO ID from the clicked row
+                int poId = Convert.ToInt32(dgvPurchaseOrder.Rows[e.RowIndex].Cells["PoId"].Value);
+
+                // Add validation to check if PO ID is valid
+                if (poId <= 0)
+                {
+                    MessageBox.Show("Invalid Purchase Order ID.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                LoadUserControlPanel(new PurchaseOrderDetails(poId, projectCode));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading purchase order details: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -500,9 +611,9 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.P
                         SELECT 
                             pr.id,
                             v.vendor_name,
-                            pr.quotation_id,
                             pr.quantity,
-                            pr.grand_total
+                            pr.grand_total,
+                            pr.status
                         FROM purchase_request pr
                         INNER JOIN vendor_list v ON pr.vendor_id = v.id
                         LEFT JOIN quotation q ON pr.quotation_id = q.quotation_id
@@ -520,19 +631,18 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.P
                                 int prId = reader["id"] != DBNull.Value
                                     ? Convert.ToInt32(reader["id"]) : 0;
                                 string vendorName = reader["vendor_name"]?.ToString() ?? "Unknown";
-                                string quotationId = reader["quotation_id"] != DBNull.Value
-                                    ? reader["quotation_id"].ToString() : "N/A";
                                 int quantity = reader["quantity"] != DBNull.Value
                                     ? Convert.ToInt32(reader["quantity"]) : 0;
                                 decimal grandTotal = reader["grand_total"] != DBNull.Value
                                     ? Convert.ToDecimal(reader["grand_total"]) : 0;
+                                string status = reader["status"]?.ToString() ?? "Unknown";
 
                                 dgvPurchaseRequest.Rows.Add(
                                     prId,
                                     vendorName,
-                                    quotationId,
                                     quantity,
-                                    $"₱ {grandTotal:N2}"
+                                    $"₱ {grandTotal:N2}",
+                                    status
                                 );
                             }
                         }
@@ -544,6 +654,75 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.P
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading purchase request data: {ex.Message}", "Database Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadPurchaseOrderData()
+        {
+            try
+            {
+                dgvPurchaseOrder.Rows.Clear();
+
+                using (MySqlConnection conn = new MySqlConnection(GetConnectionString()))
+                {
+                    conn.Open();
+                    string query = @"
+                        SELECT
+                            id,
+                            po_name,
+                            vendor_name,
+                            quantity,
+                            grand_total,
+                            po_date,
+                            status
+                        FROM purchase_order po
+                        WHERE project_code = @project_code
+                        ORDER BY po.id DESC";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@project_code", projectCode);
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int poId = reader["id"] != DBNull.Value
+                                    ? Convert.ToInt32(reader["id"]) : 0;
+                                string poName = reader["po_name"]?.ToString() ?? "Unknown";
+                                string vendorName = reader["vendor_name"]?.ToString() ?? "Unknown";
+                                int quantity = reader["quantity"] != DBNull.Value
+                                    ? Convert.ToInt32(reader["quantity"]) : 0;
+                                decimal grandTotal = reader["grand_total"] != DBNull.Value
+                                    ? Convert.ToDecimal(reader["grand_total"]) : 0;
+                                DateTime poDate = reader["po_date"] != DBNull.Value
+                                    ? Convert.ToDateTime(reader["po_date"]) : DateTime.Now;
+                                string status = reader["status"]?.ToString() ?? "Unknown";
+
+                                dgvPurchaseOrder.Rows.Add(
+                                    poId,
+                                    poName,
+                                    vendorName,
+                                    quantity,
+                                    $"₱ {grandTotal:N2}",
+                                    poDate.ToString("yyyy-MM-dd"),
+                                    status
+                                );
+
+                                // Apply color coding for status
+                                int rowIndex = dgvPurchaseOrder.Rows.Count - 1;
+                                ApplyPurchaseOrderStatusColor(dgvPurchaseOrder.Rows[rowIndex], status);
+                            }
+                        }
+                    }
+                }
+
+                dgvPurchaseOrder.ClearSelection();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading purchase order data: {ex.Message}", "Database Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -572,6 +751,33 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.P
 
             row.Cells["Status"].Style.ForeColor = statusColor;
             row.Cells["Status"].Style.Font = new Font(dgvBudget.Font, FontStyle.Bold);
+        }
+
+        private void ApplyPurchaseOrderStatusColor(DataGridViewRow row, string status)
+        {
+            Color statusColor;
+
+            switch (status.ToLower())
+            {
+                case "approved":
+                case "completed":
+                    statusColor = Color.Green;
+                    break;
+                case "for approval":
+                case "pending":
+                    statusColor = Color.Orange;
+                    break;
+                case "rejected":
+                case "cancelled":
+                    statusColor = Color.Red;
+                    break;
+                default:
+                    statusColor = Color.Gray;
+                    break;
+            }
+
+            row.Cells["Status"].Style.ForeColor = statusColor;
+            row.Cells["Status"].Style.Font = new Font(dgvPurchaseOrder.Font, FontStyle.Bold);
         }
 
         // ✅ Public method to refresh data (can be called after creating new budget/quotation)

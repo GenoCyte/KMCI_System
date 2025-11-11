@@ -1,7 +1,4 @@
 using MySql.Data.MySqlClient;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace KMCI_System.PurchasingModule
 {
@@ -27,7 +24,7 @@ namespace KMCI_System.PurchasingModule
         private void InitializeComponent()
         {
             SuspendLayout();
-            
+
             // Form properties
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -38,7 +35,7 @@ namespace KMCI_System.PurchasingModule
             StartPosition = FormStartPosition.CenterParent;
             Text = "Add New Project";
             BackColor = Color.White;
-            
+
             ResumeLayout(false);
         }
 
@@ -146,26 +143,26 @@ namespace KMCI_System.PurchasingModule
                 using (MySqlConnection conn = new MySqlConnection(connString))
                 {
                     conn.Open();
-                    
+
                     // Get last 2 digits of current year
                     string yearSuffix = DateTime.Now.Year.ToString().Substring(2);
-            
+
                     // Get the highest project number for the current year
                     string maxQuery = @"
                         SELECT MAX(CAST(SUBSTRING(project_code, 8) AS UNSIGNED)) 
                         FROM project_list 
                         WHERE project_code LIKE @yearPattern";
-            
+
                     using (MySqlCommand cmd = new MySqlCommand(maxQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@yearPattern", $"PROJ{yearSuffix}-%");
-                
+
                         object result = cmd.ExecuteScalar();
                         int nextNumber = (result == null || result == DBNull.Value) ? 1 : Convert.ToInt32(result) + 1;
-                
+
                         // Format: PROJ + Last 2 digits of year + 5-digit number
                         string projectCode = $"PROJ{yearSuffix}-{nextNumber:D5}";
-                
+
                         txtProjectCode.Text = projectCode;
                     }
                 }
@@ -245,7 +242,7 @@ namespace KMCI_System.PurchasingModule
             }
         }
 
-        private int GetCompanyId() 
+        private int GetCompanyId()
         {
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
@@ -259,13 +256,13 @@ namespace KMCI_System.PurchasingModule
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@companyName", cboCompanyName.Text.Trim());
-                    
+
                     object result = cmd.ExecuteScalar();
                     if (result != null && result != DBNull.Value)
                     {
                         return Convert.ToInt32(result);
                     }
-                    
+
                     throw new Exception("Company not found in database.");
                 }
             }

@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
+﻿namespace KMCI_System.SalesModule
 {
     public partial class ProjectOverview : UserControl
     {
@@ -103,7 +93,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
         private void GroupBoxButton_Click(object sender, EventArgs e)
         {
             Button clickedButton = sender as Button;
-            
+
             if (clickedButton != null)
             {
                 // Reset all buttons to white
@@ -133,19 +123,19 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule
         private void btnBudgetAllocationButton_Click(object sender, EventArgs e)
         {
             GroupBoxButton_Click(sender, e);
-            LoadUserControlPanel(new BudgetAllocation.BudgetAllocation(projectCode));
+            LoadUserControlPanel(new BudgetAllocation(projectCode));
         }
 
         private void btnCreateQuotationButton_Click(object sender, EventArgs e)
         {
             GroupBoxButton_Click(sender, e);
-            LoadUserControlPanel(new CreateQuotation.CreateQuotation(projectCode)); // Pass projectCode
+            LoadUserControlPanel(new CreateQuotation(projectCode)); // Pass projectCode
         }
 
         private void btnProjectDirectoryButton_Click(object sender, EventArgs e)
         {
             GroupBoxButton_Click(sender, e);
-            LoadUserControlPanel(new ProjectDirectory.ProjectDirectory(projectCode));
+            LoadUserControlPanel(new ProjectDirectory(projectCode));
         }
 
         private void LoadProjectdetails(UserControl userControl)

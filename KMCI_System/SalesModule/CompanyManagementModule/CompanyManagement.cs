@@ -1,15 +1,4 @@
-﻿using KMCI_System.SalesModule.CompanyManagementModule;
-using KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule;
-using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using MySql.Data.MySqlClient;
 
 namespace KMCI_System.SalesModule
 {
@@ -102,6 +91,8 @@ namespace KMCI_System.SalesModule
                 Width = 80,
                 FlatStyle = FlatStyle.Flat
             };
+            btnDelete.DefaultCellStyle.ForeColor = Color.Red;
+            btnDelete.DefaultCellStyle.SelectionForeColor = Color.Red;
             dgvCompany.Columns.Add(btnDelete);
 
             // Set column widths

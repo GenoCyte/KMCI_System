@@ -61,6 +61,48 @@
     <Compile Update="AdminModule\UserManagementModule\UserManagementUC.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="InventoryModule\ProductManagementModule\AddProduct.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProductManagementModule\ProductManagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\AddProjectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectDetailsModule\BudgetAllocation\AddBudget.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectDetailsModule\BudgetAllocation\BudgetAllocation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectDetailsModule\CreateQuotation\AddProductList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectDetailsModule\CreateQuotation\CreateQuotation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectDetailsModule\ProjectDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectDetailsModule\ProjectDirectory\BudgetDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectDetailsModule\ProjectDirectory\ProjectDirectory.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectDetailsModule\ProjectDirectory\PurchaseRequestDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectDetailsModule\ProjectDirectory\QuotationDetails.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectDetailsModule\ProjectOverview.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="InventoryModule\ProjectManagementModule\ProjectManagement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -104,6 +146,9 @@
     </Compile>
     <Compile Update="PurchasingModule\PurchasingForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="SalesModule\ProjectManagementModule\ProjectDetailsModule\ProjectDirectory\PurchaseRequestDetails.cs">
+      <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
 

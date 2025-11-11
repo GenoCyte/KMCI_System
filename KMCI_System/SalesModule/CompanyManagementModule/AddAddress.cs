@@ -1,15 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace KMCI_System.SalesModule.CompanyManagementModule
+namespace KMCI_System.SalesModule
 {
     public partial class AddAddress : Form
     {
@@ -232,10 +223,10 @@ namespace KMCI_System.SalesModule.CompanyManagementModule
             Controls.Add(btnCancel);
 
             yPosition += 60; // Add some bottom spacing
-            
+
             // NOW set the form size to fit all content
             this.ClientSize = new Size(700, yPosition);
-            
+
             // Update AutoScrollMinSize (in case content is taller than screen)
             int maxHeight = Screen.PrimaryScreen.WorkingArea.Height - 100;
             if (yPosition > maxHeight)

@@ -1,15 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace KMCI_System.SalesModule.CompanyManagementModule
+namespace KMCI_System.SalesModule
 {
     public partial class CompanyDetails : UserControl
     {
@@ -205,6 +196,8 @@ namespace KMCI_System.SalesModule.CompanyManagementModule
                 FlatStyle = FlatStyle.Flat,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             };
+            btnDeleteAddress.DefaultCellStyle.ForeColor = Color.Red;
+            btnDeleteAddress.DefaultCellStyle.SelectionForeColor = Color.Red;
             dgvAddresses.Columns.Add(btnDeleteAddress);
 
             dgvAddresses.CellContentClick += DgvAddresses_CellContentClick;
@@ -304,6 +297,8 @@ namespace KMCI_System.SalesModule.CompanyManagementModule
                 FlatStyle = FlatStyle.Flat,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             };
+            btnDeleteProponent.DefaultCellStyle.ForeColor = Color.Red;
+            btnDeleteProponent.DefaultCellStyle.SelectionForeColor = Color.Red;
             dgvProponents.Columns.Add(btnDeleteProponent);
 
             dgvProponents.CellContentClick += DgvProponents_CellContentClick;
@@ -319,7 +314,7 @@ namespace KMCI_System.SalesModule.CompanyManagementModule
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
-                
+
                 // Get company details
                 string query = "SELECT id, tin FROM company_list WHERE company_name = @companyName";
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
@@ -334,7 +329,7 @@ namespace KMCI_System.SalesModule.CompanyManagementModule
                         }
                     }
                 }
-                
+
                 // Get all roles for this company and display horizontally
                 pnlRoles.Controls.Clear();
                 string roleQuery = "SELECT role FROM company_role WHERE company_id = @companyId ORDER BY role";
@@ -347,7 +342,7 @@ namespace KMCI_System.SalesModule.CompanyManagementModule
                         while (reader.Read())
                         {
                             hasRoles = true;
-                            
+
                             // Create a label for each role with badge-like styling
                             Label roleLabel = new Label
                             {
@@ -360,10 +355,10 @@ namespace KMCI_System.SalesModule.CompanyManagementModule
                                 Font = new Font("Segoe UI", 9F),
                                 BorderStyle = BorderStyle.FixedSingle
                             };
-                            
+
                             pnlRoles.Controls.Add(roleLabel);
                         }
-                        
+
                         // If no roles found, show a message
                         if (!hasRoles)
                         {

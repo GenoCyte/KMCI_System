@@ -1,14 +1,5 @@
-﻿using KMCI_System.PurchasingModule.PurchaseOrderModule;
+﻿using KMCI_System.Login; // ✅ Add to access Session class
 using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
 {
@@ -24,7 +15,7 @@ namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
         private TextBox txtProjectCode;
         private Label lblRequestedByLabel;
         private TextBox txtRequestedBy;
-        
+
         // Client Information
         private Label lblClientInfoHeader;
         private Label lblCompanyNameLabel;
@@ -65,17 +56,17 @@ namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
         public BudgetAllocationDetails(int budgetId, string projectCode)
         {
             InitializeComponent();
-            
+
             // Store the parameters
             selectedBudgetId = budgetId;
             selectedProjectCode = projectCode;
-            
+
             // Setup UI
             SetupDetailsPanel();
-            
+
             // Load the budget details immediately
             LoadBudgetDetails(budgetId, projectCode);
-            
+
             // Show the details panel
             detailsPanel.Visible = true;
         }
@@ -526,7 +517,7 @@ namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
-                
+
                 // Load budget allocation and client details
                 string query = @"
                     SELECT 
@@ -534,7 +525,7 @@ namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
                         pl.company_name, pl.tin,
                         p.proponent_name, p.proponent_email, p.proponent_number,
                         ca.house_num, ca.street, ca.subdivision, ca.barangay, ca.city, ca.province, ca.region,
-                        q.requested_by
+                        ba.created_by
                     FROM budget_allocation ba
                     LEFT JOIN project_list pl ON ba.project_code = pl.project_code
                     LEFT JOIN proponents p ON pl.proponent_id = p.id
@@ -553,7 +544,20 @@ namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
                         {
                             // Project Info
                             txtProjectCode.Text = reader["project_code"]?.ToString() ?? "";
-                            txtRequestedBy.Text = reader["requested_by"]?.ToString() ?? "N/A";
+
+
+                            // ✅ Use logged-in user's name from Session if database value is N/A or empty
+                            string createdBy = reader["created_by"]?.ToString();
+                            if (string.IsNullOrEmpty(createdBy) || createdBy == "N/A")
+                            {
+                                txtRequestedBy.Text = !string.IsNullOrEmpty(Session.CurrentUserName)
+                                    ? "Unknown User"
+                                    : "Unknown User";
+                            }
+                            else
+                            {
+                                txtRequestedBy.Text = createdBy;
+                            }
 
                             // Client Info
                             txtCompanyName.Text = reader["company_name"]?.ToString() ?? "";
@@ -567,36 +571,36 @@ namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
                             string? houseNum = reader["house_num"]?.ToString();
                             if (!string.IsNullOrEmpty(houseNum))
                                 addressParts.Add(houseNum);
-                            
+
                             string? street = reader["street"]?.ToString();
                             if (!string.IsNullOrEmpty(street))
                                 addressParts.Add(street);
-                            
+
                             string? subdivision = reader["subdivision"]?.ToString();
                             if (!string.IsNullOrEmpty(subdivision))
                                 addressParts.Add(subdivision);
-                            
+
                             string? barangay = reader["barangay"]?.ToString();
                             if (!string.IsNullOrEmpty(barangay))
                                 addressParts.Add(barangay);
-                            
+
                             string? city = reader["city"]?.ToString();
                             if (!string.IsNullOrEmpty(city))
                                 addressParts.Add(city);
-                            
+
                             string? province = reader["province"]?.ToString();
                             if (!string.IsNullOrEmpty(province))
                                 addressParts.Add(province);
-                            
+
 
                             txtAddress.Text = string.Join(", ", addressParts);
 
                             // Budget Details
                             txtQuotationId.Text = reader["quotation_id"]?.ToString() ?? "N/A";
-                            
+
                             decimal bidPrice = reader["bid_price"] != DBNull.Value ? Convert.ToDecimal(reader["bid_price"]) : 0;
                             decimal totalCost = reader["total_cost"] != DBNull.Value ? Convert.ToDecimal(reader["total_cost"]) : 0;
-                            
+
                             txtBidPrice.Text = bidPrice == 0 ? "On Approval" : $"₱ {bidPrice:N2}";
                             txtTotalCost.Text = totalCost == 0 ? "On Approval" : $"₱ {totalCost:N2}";
 
@@ -637,7 +641,7 @@ namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
                         while (reader.Read())
                         {
                             string categoryName = reader["category_name"]?.ToString() ?? "";
-                            decimal budget = reader["category_budget"] != DBNull.Value 
+                            decimal budget = reader["category_budget"] != DBNull.Value
                                 ? Convert.ToDecimal(reader["category_budget"]) : 0;
 
                             dgvCategories.Rows.Add(categoryName, $"₱ {budget:N2}");
@@ -729,7 +733,7 @@ namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
                     // Remove the ₱ symbol and commas from the text before parsing
                     string budgetText = txtTotalBudget.Text.Replace("₱", "").Replace(",", "").Trim();
                     decimal budgetValue = decimal.Parse(budgetText);
-                    
+
                     cmd.Parameters.AddWithValue("@budgetAllocation", budgetValue);
                     cmd.Parameters.AddWithValue("@projectCode", selectedProjectCode);
                     cmd.ExecuteNonQuery();
@@ -749,7 +753,7 @@ namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
             if (adminForm != null)
             {
                 adminForm.panel1.Controls.Clear();
-                
+
                 BudgetApprovalManagement budgetApprovalManagement = new BudgetApprovalManagement();
                 budgetApprovalManagement.Dock = DockStyle.Fill;
                 adminForm.panel1.Controls.Add(budgetApprovalManagement);

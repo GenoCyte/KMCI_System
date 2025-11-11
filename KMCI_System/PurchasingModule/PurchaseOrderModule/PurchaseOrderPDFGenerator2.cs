@@ -1,11 +1,6 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System;
-using System.IO;
 using MySql.Data.MySqlClient;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace KMCI_System.PurchasingModule.PurchaseOrderModule
 {
@@ -472,7 +467,7 @@ namespace KMCI_System.PurchasingModule.PurchaseOrderModule
                         }
 
                         data.PONumber = reader["po_name"]?.ToString() ?? "";
-                        data.PODate = reader["po_date"] != DBNull.Value ? 
+                        data.PODate = reader["po_date"] != DBNull.Value ?
                             Convert.ToDateTime(reader["po_date"]) : DateTime.Now;
 
                         // Supplier Details (Vendor)
@@ -496,7 +491,7 @@ namespace KMCI_System.PurchasingModule.PurchaseOrderModule
                         data.DeliveryDate = "3-5 Days upon receipt of PO";
 
                         // Totals
-                        data.Subtotal = reader["grand_total"] != DBNull.Value ? 
+                        data.Subtotal = reader["grand_total"] != DBNull.Value ?
                             Convert.ToDecimal(reader["grand_total"]) : 0;
                         data.TaxRate = "12%";
                         data.VatInputTax = data.Subtotal * 0.12m;

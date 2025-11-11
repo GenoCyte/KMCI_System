@@ -1,15 +1,6 @@
-﻿using Org.BouncyCastle.Asn1.Cmp;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+﻿using System.Collections.Specialized;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KMCI_System.Login
 {
@@ -71,15 +62,15 @@ namespace KMCI_System.Login
         {
 
         }
-  
 
-     
 
-     
+
+
+
 
         private void btnSendOTP_Click_1(object sender, EventArgs e)
         {
-             string phone = tbPhone.Text.Trim();
+            string phone = tbPhone.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(phone))
             {

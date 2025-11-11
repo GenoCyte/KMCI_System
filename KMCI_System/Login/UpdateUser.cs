@@ -1,10 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Xml;
 
 namespace KMCI_System.Login
 {
@@ -20,7 +14,7 @@ namespace KMCI_System.Login
         public UpdateUser(string name, string email, string password, string department, string position, string contact)
         {
             InitializeComponent();
-          
+
 
             // Split name into first and last name if possible
             var parts = name.Split(' ');
@@ -40,7 +34,7 @@ namespace KMCI_System.Login
             tb_contact.Text = contact;
         }
 
-        
+
 
         private void UpdateUser_Load(object sender, EventArgs e)
         {
@@ -146,7 +140,7 @@ namespace KMCI_System.Login
                     string query = "UPDATE kingland.user SET name=@name, email=@email, password=@password, department=@department, position=@position, contact=@contact WHERE email=@email";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
-                       
+
                     {
                         string name = tb_fname.Text;
 
@@ -161,12 +155,12 @@ namespace KMCI_System.Login
                         Myreader = cmd.ExecuteReader();
                         con.Close();
 
-                            MessageBox.Show("User updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            this.Close();
-                        }
-                       
+                        MessageBox.Show("User updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.Close();
                     }
-                
+
+                }
+
             }
             catch (Exception ex)
             {
@@ -179,6 +173,6 @@ namespace KMCI_System.Login
 
         }
     }
-    }
+}
 
 

@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 
-namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsModule.BudgetAllocation
+namespace KMCI_System.PurchasingModule
 {
     public partial class AddBudget : Form
     {
@@ -541,7 +532,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             }
         }
 
-        private void SaveBudget() 
+        private void SaveBudget()
         {
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
@@ -552,17 +543,17 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                     try
                     {
                         QuotationItem? selectedQuotation = cboQuotation.SelectedItem as QuotationItem;
-                        
+
                         if (selectedQuotation == null)
                         {
                             throw new InvalidOperationException("No quotation selected.");
                         }
-                        
+
                         // Parse the currency values to decimal
                         decimal bidPrice = decimal.Parse(txtBidPrice.Text.Replace("₱", "").Replace(",", "").Trim());
                         decimal totalCost = decimal.Parse(txtTotalCost.Text.Replace("₱", "").Replace(",", "").Trim());
                         decimal totalBudget = decimal.Parse(txtTotalBudget.Text.Replace("₱", "").Replace(",", "").Trim());
-                        
+
                         string query = @"
                             INSERT INTO budget_allocation
                             (project_code, quotation_id, bid_price, total_cost, status) 
@@ -611,7 +602,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                 using (MySqlTransaction transaction = conn.BeginTransaction())
                 {
                     try
-                    {   
+                    {
                         // Save each category
                         foreach (DataGridViewRow row in dgvCategories.Rows)
                         {

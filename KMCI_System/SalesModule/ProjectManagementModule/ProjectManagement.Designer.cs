@@ -1,6 +1,6 @@
 ﻿using static System.Windows.Forms.LinkLabel;
 
-namespace KMCI_System.PurchasingModule
+namespace KMCI_System.SalesModule
 {
     partial class ProjectManagement
     {

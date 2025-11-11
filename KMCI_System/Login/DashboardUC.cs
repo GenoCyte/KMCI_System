@@ -1,7 +1,3 @@
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace KMCI_System.Login
 {
     public class DashboardUC : UserControl

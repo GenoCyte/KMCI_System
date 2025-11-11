@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
+using KMCI_System.Login;
 
-namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.BudgetAllocation
+namespace KMCI_System.SalesModule
 {
     public partial class AddBudget : Form
     {
@@ -30,6 +22,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
         private Button btnCancel = null!;
 
         private string projectCode;
+        private string currentUser = Session.CurrentUserName;
 
         public AddBudget(string projectCode)
         {
@@ -221,6 +214,8 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
                 FlatStyle = FlatStyle.Flat,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             };
+            btnDeleteColumn.DefaultCellStyle.ForeColor = Color.Red;
+            btnDeleteColumn.DefaultCellStyle.SelectionForeColor = Color.Red;
             dgvCategories.Columns.Add(btnDeleteColumn);
 
             // Register event handlers
@@ -541,7 +536,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
             }
         }
 
-        private int SaveBudget() 
+        private int SaveBudget()
         {
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
@@ -552,19 +547,19 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
                     try
                     {
                         QuotationItem? selectedQuotation = cboQuotation.SelectedItem as QuotationItem;
-                        
+
                         if (selectedQuotation == null)
                         {
                             throw new InvalidOperationException("No quotation selected.");
                         }
-                        
+
                         decimal bidPrice = decimal.Parse(txtBidPrice.Text.Replace("₱", "").Replace(",", "").Trim());
                         decimal totalCost = decimal.Parse(txtTotalCost.Text.Replace("₱", "").Replace(",", "").Trim());
-                        
+
                         string query = @"
                             INSERT INTO budget_allocation
-                            (project_code, quotation_id, bid_price, total_cost, status) 
-                            VALUES (@projectCode, @quotation_id, @bid_price, @total_cost, @status)";
+                            (project_code, quotation_id, bid_price, total_cost, status, requested_by) 
+                            VALUES (@projectCode, @quotation_id, @bid_price, @total_cost, @status, @requested_by)";
 
                         using (MySqlCommand cmd = new MySqlCommand(query, conn, transaction))
                         {
@@ -573,11 +568,12 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
                             cmd.Parameters.AddWithValue("@bid_price", bidPrice);
                             cmd.Parameters.AddWithValue("@total_cost", totalCost);
                             cmd.Parameters.AddWithValue("@status", "Pending");
+                            cmd.Parameters.AddWithValue("@requested_by", currentUser);
                             cmd.ExecuteNonQuery();
-                            
+
                             // Get the last inserted ID
                             int allocationId = (int)cmd.LastInsertedId;
-                            
+
                             transaction.Commit();
                             return allocationId;
                         }
@@ -600,7 +596,7 @@ namespace KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.B
                 using (MySqlTransaction transaction = conn.BeginTransaction())
                 {
                     try
-                    {   
+                    {
                         // Save each category
                         foreach (DataGridViewRow row in dgvCategories.Rows)
                         {

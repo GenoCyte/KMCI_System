@@ -1,10 +1,6 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System;
-using System.IO;
 using MySql.Data.MySqlClient;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 public class KinglandQuotationPdfGenerator
 {
@@ -189,6 +185,7 @@ public class KinglandQuotationPdfGenerator
         AddColoredHeaderCell(shippingTable, "DELIVERY DATE", headerFont, 2);
 
         iTextSharp.text.Font normalFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+        iTextSharp.text.Font labelFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
 
         AddDataCell(shippingTable, "Name: " + quotation.ShippedToName, normalFont);
         AddDataCell(shippingTable, quotation.ShippedToContact, normalFont);
@@ -197,7 +194,21 @@ public class KinglandQuotationPdfGenerator
 
         AddDataCell(shippingTable, "Address: " + quotation.ShippedToAddress, normalFont);
         AddDataCell(shippingTable, quotation.ShippedToContactNumber, normalFont);
-        AddDataCell(shippingTable, "", normalFont, Element.ALIGN_LEFT, 3);
+
+        // Created By field - spans across PAYMENT and DELIVERY DATE columns
+        PdfPCell createdByCell = new PdfPCell();
+        createdByCell.Colspan = 3;
+        createdByCell.HorizontalAlignment = Element.ALIGN_LEFT;
+        createdByCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        createdByCell.Padding = 5;
+        createdByCell.MinimumHeight = 20;
+
+        Paragraph createdByText = new Paragraph();
+        createdByText.Add(new Chunk("Created By: ", labelFont));
+        createdByText.Add(new Chunk(quotation.CreatedBy, normalFont));
+        createdByCell.AddElement(createdByText);
+
+        shippingTable.AddCell(createdByCell);
 
         document.Add(shippingTable);
     }
@@ -491,7 +502,8 @@ public class KinglandQuotationPdfGenerator
                     ca.city,
                     ca.province,
                     p.proponent_name,
-                    p.proponent_number
+                    p.proponent_number,
+                    q.created_by
                 FROM quotation q
                 JOIN company_list c ON q.company_id = c.id
                 LEFT JOIN company_address ca ON q.address_id = ca.id
@@ -507,17 +519,17 @@ public class KinglandQuotationPdfGenerator
                     {
                         throw new Exception($"No quotation found for ID: {quotationId}");
                     }
-                    
+
                     data.QuotationNumber = "KMCI-" + quotationId.ToString("D4");
                     data.QuotationDate = Convert.ToDateTime(reader["quotation_date"]);
 
                     // Quotation To
                     data.QuotationToName = reader["company_name"]?.ToString() ?? "";
-                    
+
                     // Concatenate address, excluding "N/A" parts
                     List<string> addressParts = new List<string>();
-                    string[] addressFields = { "house_num", "street", "barangay", "city", "province"};
-                    
+                    string[] addressFields = { "house_num", "street", "barangay", "city", "province" };
+
                     foreach (string field in addressFields)
                     {
                         string value = reader[field]?.ToString() ?? "";
@@ -526,7 +538,7 @@ public class KinglandQuotationPdfGenerator
                             addressParts.Add(value.Trim());
                         }
                     }
-                    
+
                     data.QuotationToAddress = string.Join(", ", addressParts);
                     data.Attention = reader["proponent_name"]?.ToString() ?? "";
                     data.ContactNumber = reader["proponent_number"]?.ToString() ?? "";
@@ -546,6 +558,9 @@ public class KinglandQuotationPdfGenerator
                     data.DeliveryDate = reader["delivery_time"] != DBNull.Value ?
                         reader["delivery_time"]?.ToString() + " Days" :
                         "3-5 Days upon receipt of PO";
+
+                    // Created By
+                    data.CreatedBy = reader["created_by"]?.ToString() ?? "Unknown";
 
                     // Totals
                     data.Subtotal = Convert.ToDecimal(reader["bid_price"]);
@@ -588,7 +603,7 @@ public class KinglandQuotationPdfGenerator
                             Description = reader["prod_name"]?.ToString() ?? "",
                             Brand = reader["brand"]?.ToString() ?? "",
                             Quantity = Convert.ToInt32(reader["quantity"]),
-                            Unit = reader["uom"]?.ToString()?? "",
+                            Unit = reader["uom"]?.ToString() ?? "",
                             UnitPrice = Convert.ToDecimal(reader["proposal_price"]),
                             Total = Convert.ToDecimal(reader["sub_total"])
                         });
@@ -622,6 +637,7 @@ public class QuotationData
     public string ShippedToContactNumber { get; set; } = "";
     public string PaymentTerms { get; set; } = "";
     public string DeliveryDate { get; set; } = "";
+    public string CreatedBy { get; set; } = "";
 
     public decimal Subtotal { get; set; }
     public string TaxRate { get; set; } = "";

@@ -1,14 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
 {
@@ -32,6 +22,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
         private DataGridView dgvProponents;
         private String projectCode;
         private int companyId;
+        private Button btnMarkAsComplete;
 
         public ProjectDetails(string projectCode)
         {
@@ -41,10 +32,28 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
             LoadProjectDetails();
             LoadAddresses();
             LoadProponents();
+            UpdateMarkAsCompleteButton(); // Check if button should be enabled
         }
 
         private void SetupForm()
         {
+            btnMarkAsComplete = new Button
+            {
+                Text = "Mark as Complete",
+                Location = new Point(900, 20),
+                Size = new Size(170, 30),
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                BackColor = Color.FromArgb(0, 150, 0),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            btnMarkAsComplete.FlatAppearance.BorderSize = 0;
+            btnMarkAsComplete.MouseEnter += (s, e) => btnMarkAsComplete.BackColor = Color.FromArgb(0, 120, 0);
+            btnMarkAsComplete.MouseLeave += (s, e) => btnMarkAsComplete.BackColor = Color.FromArgb(0, 150, 0);
+            btnMarkAsComplete.Click += BtnMarkAsComplete_Click;
+            Controls.Add(btnMarkAsComplete);
+
             lblClientName = new Label
             {
                 Text = "Client Name:",
@@ -418,7 +427,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
-                
+
                 // Load address based on address_id from project_list
                 string query = @"
                     SELECT ca.id, ca.house_num, ca.street, ca.subdivision, ca.barangay, ca.city, ca.province, ca.region 
@@ -461,7 +470,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
-                
+
                 // Load proponent based on proponent_id from project_list
                 string query = @"
                     SELECT p.id, p.proponent_name, p.proponent_email, p.proponent_number 
@@ -635,7 +644,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
                                     {
                                         MessageBox.Show("Proponent updated successfully.", "Success",
                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        
+
                                         // Reload the proponents grid to show the selected proponent
                                         LoadProponents();
                                         selectForm.DialogResult = DialogResult.OK;
@@ -805,7 +814,7 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
                                     {
                                         MessageBox.Show("Address updated successfully.", "Success",
                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        
+
                                         // Reload the addresses grid to show the selected address
                                         LoadAddresses();
                                         selectForm.DialogResult = DialogResult.OK;
@@ -830,6 +839,130 @@ namespace KMCI_System.AdminModule.ProjectManagementModule.ProjectDetailsModule
 
                 selectForm.Controls.AddRange(new Control[] { lblInfo, listBox, btnSelect, btnCancel });
                 selectForm.ShowDialog(this);
+            }
+        }
+
+        private void BtnMarkAsComplete_Click(object sender, EventArgs e)
+        {
+            // Confirm with user
+            DialogResult result = MessageBox.Show(
+                "Are you sure you want to mark this project as completed? This action cannot be undone.",
+                "Confirm Completion",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
+                using (MySqlConnection conn = new MySqlConnection(connString))
+                {
+                    try
+                    {
+                        conn.Open();
+                        string updateQuery = @"
+                            UPDATE project_list 
+                            SET status = 'Completed' 
+                            WHERE project_code = @projectCode";
+
+                        using (MySqlCommand cmd = new MySqlCommand(updateQuery, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@projectCode", projectCode);
+                            
+                            int rowsAffected = cmd.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                MessageBox.Show("Project marked as completed successfully.", "Success",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                
+                                // Reload project details to reflect the change
+                                LoadProjectDetails();
+                                
+                                // Disable the button after completion
+                                btnMarkAsComplete.Enabled = false;
+                                btnMarkAsComplete.BackColor = Color.Gray;
+                            }
+                            else
+                            {
+                                MessageBox.Show("Failed to update project status.", "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error updating project status: {ex.Message}", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private bool AreAllPurchaseOrdersDelivered()
+        {
+            string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+                    
+                    // Check if there are any purchase orders for this project
+                    string checkQuery = @"
+                        SELECT COUNT(*) 
+                        FROM purchase_order
+                        WHERE project_code = @projectCode";
+                    
+                    using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn))
+                    {
+                        checkCmd.Parameters.AddWithValue("@projectCode", projectCode);
+                        int totalPOs = Convert.ToInt32(checkCmd.ExecuteScalar());
+                        
+                        // If no purchase orders exist, don't allow completion
+                        if (totalPOs == 0)
+                        {
+                            return false;
+                        }
+                    }
+                    
+                    // Check if all purchase orders are delivered
+                    string query = @"
+                        SELECT COUNT(*) 
+                        FROM purchase_order
+                        WHERE project_code = @projectCode 
+                        AND status != 'Delivered to Client'";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@projectCode", projectCode);
+                        int undeliveredCount = Convert.ToInt32(cmd.ExecuteScalar());
+                        
+                        // Return true only if all purchase orders are delivered
+                        return undeliveredCount == 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error checking purchase order status: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+        }
+
+        private void UpdateMarkAsCompleteButton()
+        {
+            bool allDelivered = AreAllPurchaseOrdersDelivered();
+            
+            if (allDelivered && txtStatus.Text != "Completed")
+            {
+                btnMarkAsComplete.Enabled = true;
+                btnMarkAsComplete.BackColor = Color.FromArgb(0, 150, 0);
+            }
+            else
+            {
+                btnMarkAsComplete.Enabled = false;
+                btnMarkAsComplete.BackColor = Color.Gray;
             }
         }
 

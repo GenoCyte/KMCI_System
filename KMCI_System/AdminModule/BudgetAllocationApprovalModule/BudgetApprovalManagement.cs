@@ -1,14 +1,4 @@
-﻿using KMCI_System.PurchasingModule.PurchaseOrderModule;
-using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using MySql.Data.MySqlClient;
 
 namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
 {
@@ -100,10 +90,10 @@ namespace KMCI_System.AdminModule.BudgetAllocationApprovalModule
             {
                 // ✅ Get the budget ID from the hidden column
                 int budgetId = Convert.ToInt32(dgvProject.Rows[e.RowIndex].Cells["BudgetId"].Value);
-                
+
                 // ✅ Get the project code from the visible column
                 string projectCode = dgvProject.Rows[e.RowIndex].Cells["ProjectCode"].Value.ToString();
-                
+
                 // ✅ Pass both values to BudgetAllocationDetails
                 LoadUserControl(new BudgetAllocationDetails(budgetId, projectCode));
             }

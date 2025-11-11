@@ -1,15 +1,4 @@
-﻿using KMCI_System.SalesModule.ProductManagement;
-using KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule;
-using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using MySql.Data.MySqlClient;
 
 namespace KMCI_System.SalesModule
 {
@@ -30,7 +19,7 @@ namespace KMCI_System.SalesModule
 
         private void btnAddCompany_Click(object sender, EventArgs e)
         {
-            using (var addProjectForm = new SalesModule.ProductManagement.AddProjectForm())
+            using (var addProjectForm = new AddProjectForm())
             {
                 if (addProjectForm.ShowDialog() == DialogResult.OK)
                 {
@@ -115,6 +104,8 @@ namespace KMCI_System.SalesModule
                 Width = 80,
                 FlatStyle = FlatStyle.Flat
             };
+            btnDelete.DefaultCellStyle.ForeColor = Color.Red;
+            btnDelete.DefaultCellStyle.SelectionForeColor = Color.Red;
             dgvProject.Columns.Add(btnDelete);
 
             // Set column widths
@@ -180,7 +171,7 @@ namespace KMCI_System.SalesModule
             }
 
             int totalHeight = dgvProject.ColumnHeadersHeight;
-            
+
             foreach (DataGridViewRow row in dgvProject.Rows)
             {
                 totalHeight += row.Height;
@@ -208,10 +199,10 @@ namespace KMCI_System.SalesModule
                     String companyName = dgvProject.Rows[e.RowIndex].Cells["ProjectCode"].Value.ToString();
                     DeleteProject(companyName);
                     dgvProject.Rows.RemoveAt(e.RowIndex);
-                    
+
                     // Hide details panel when row is deleted
                     detailsPanel.Visible = false;
-                    
+
                     MessageBox.Show("Quotation deleted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -220,7 +211,7 @@ namespace KMCI_System.SalesModule
         private void LoadProject()
         {
             dgvProject.Rows.Clear();  // Add this line to clear existing rows first
-            
+
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
@@ -228,6 +219,7 @@ namespace KMCI_System.SalesModule
                 string query = @"
                 SELECT project_code, company_name, description, budget_allocation
                 FROM project_list
+                WHERE status != 'Completed'
                 ORDER BY id DESC";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))

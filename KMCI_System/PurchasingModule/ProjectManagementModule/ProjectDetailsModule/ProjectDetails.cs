@@ -1,16 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsModule
+namespace KMCI_System.PurchasingModule
 {
     public partial class ProjectDetails : UserControl
     {
@@ -414,7 +404,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
-                
+
                 // Load address based on address_id from project_list
                 string query = @"
                     SELECT ca.id, ca.house_num, ca.street, ca.subdivision, ca.barangay, ca.city, ca.province, ca.region 
@@ -457,7 +447,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
-                
+
                 // Load proponent based on proponent_id from project_list
                 string query = @"
                     SELECT p.id, p.proponent_name, p.proponent_email, p.proponent_number 
@@ -621,7 +611,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                                     {
                                         MessageBox.Show("Proponent updated successfully.", "Success",
                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        
+
                                         // Reload the proponents grid to show the selected proponent
                                         LoadProponents();
                                         selectForm.DialogResult = DialogResult.OK;
@@ -791,7 +781,7 @@ namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsMod
                                     {
                                         MessageBox.Show("Address updated successfully.", "Success",
                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        
+
                                         // Reload the addresses grid to show the selected address
                                         LoadAddresses();
                                         selectForm.DialogResult = DialogResult.OK;

@@ -1,8 +1,5 @@
 using MySql.Data.MySqlClient;
-using System;
-using System.Drawing;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace KMCI_System.SalesModule
 {
@@ -13,14 +10,14 @@ namespace KMCI_System.SalesModule
         private TextBox txtTIN;
         private Label lblCompanyName;
         private Label lblTIN;
-        
+
         // Roles
         private GroupBox grpRoles;
         private CheckBox chkClient;
         private CheckBox chkVendor;
         private CheckBox chkSupplier;
         private CheckBox chkInternal;
-        
+
         // Address
         private GroupBox grpAddress;
         private TextBox txtHouseNumber;
@@ -37,7 +34,7 @@ namespace KMCI_System.SalesModule
         private Label lblCity;
         private Label lblProvince;
         private Label lblRegion;
-        
+
         // Proponents
         private GroupBox grpProponents;
         private TextBox txtProponentName;
@@ -46,7 +43,7 @@ namespace KMCI_System.SalesModule
         private Label lblProponentName;
         private Label lblProponentEmail;
         private Label lblProponentNumber;
-        
+
         // Buttons
         private Button btnSave;
         private Button btnCancel;
@@ -60,10 +57,10 @@ namespace KMCI_System.SalesModule
         private void InitializeComponent()
         {
             SuspendLayout();
-            
+
             // Get the screen height
             int screenHeight = Screen.PrimaryScreen.WorkingArea.Height;
-            
+
             // Form properties
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -76,7 +73,7 @@ namespace KMCI_System.SalesModule
             BackColor = Color.White;
             AutoScroll = true;
             Padding = new Padding(0, 0, 0, 30); // Add padding at the bottom
-            
+
             ResumeLayout(false);
         }
 
@@ -86,7 +83,7 @@ namespace KMCI_System.SalesModule
             int leftMargin = 30;
             int rightMargin = 30;
             int controlWidth = 640;
-            
+
             // Company Name
             lblCompanyName = new Label
             {
@@ -504,7 +501,7 @@ namespace KMCI_System.SalesModule
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(txtBarangay.Text) || string.IsNullOrWhiteSpace(txtCity.Text) || 
+            if (string.IsNullOrWhiteSpace(txtBarangay.Text) || string.IsNullOrWhiteSpace(txtCity.Text) ||
                 string.IsNullOrWhiteSpace(txtProvince.Text) || string.IsNullOrWhiteSpace(txtRegion.Text))
             {
                 MessageBox.Show("Please complete all required address fields (Barangay, City, Province, Region).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -551,7 +548,7 @@ namespace KMCI_System.SalesModule
                         {
                             cmd.Parameters.AddWithValue("@companyName", txtCompanyName.Text.Trim());
                             cmd.Parameters.AddWithValue("@tin", formattedTIN);
-                            
+
                             companyId = Convert.ToInt32(cmd.ExecuteScalar());
                         }
 

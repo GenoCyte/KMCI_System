@@ -1,9 +1,5 @@
 ﻿using Guna.UI2.WinForms;
 using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace KMCI_System.Login
 {
@@ -61,7 +57,7 @@ namespace KMCI_System.Login
                 }
             }
 
-           
+
         }
 
         private void SubmenuTimer_Tick(object sender, EventArgs e)
@@ -176,7 +172,7 @@ namespace KMCI_System.Login
         {
         }
 
-  
+
 
 
 
@@ -185,7 +181,7 @@ namespace KMCI_System.Login
             LoadControl(new UserManagementUC());
         }
 
-       
+
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
@@ -224,7 +220,7 @@ namespace KMCI_System.Login
             this.Close();
         }
 
-        
+
 
         private void panelMain_Paint(object sender, PaintEventArgs e)
         {

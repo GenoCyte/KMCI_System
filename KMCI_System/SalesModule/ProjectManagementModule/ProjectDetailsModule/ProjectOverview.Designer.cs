@@ -1,4 +1,4 @@
-﻿namespace KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsModule
+﻿namespace KMCI_System.SalesModule
 {
     partial class ProjectOverview
     {

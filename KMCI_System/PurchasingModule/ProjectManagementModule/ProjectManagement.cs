@@ -1,15 +1,4 @@
-﻿using KMCI_System.PurchasingModule.ProjectManagementModule;
-using KMCI_System.PurchasingModule.ProjectManagementModule.ProjectDetailsModule;
-using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using MySql.Data.MySqlClient;
 
 namespace KMCI_System.PurchasingModule
 {
@@ -17,7 +6,7 @@ namespace KMCI_System.PurchasingModule
     {
         private DataGridView dgvProject;
         private Panel detailsPanel;
-        private ProjectManagementModule.ProjectDetailsModule.ProjectOverview projectDetailsControl;
+        private ProjectOverview projectDetailsControl;
         private UserControl currentUserControl;
 
         public ProjectManagement()
@@ -139,8 +128,8 @@ namespace KMCI_System.PurchasingModule
             if (e.RowIndex >= 0 && e.ColumnIndex != dgvProject.Columns["Actions"].Index)
             {
                 String projectCode = dgvProject.Rows[e.RowIndex].Cells["ProjectCode"].Value.ToString();
-                // ✅ FIXED: Explicitly use PurchasingModule's ProjectOverview
-                LoadUserControl(new ProjectManagementModule.ProjectDetailsModule.ProjectOverview(projectCode));
+                // ✅ Using PurchasingModule's ProjectOverview
+                LoadUserControl(new ProjectOverview(projectCode));
             }
         }
 

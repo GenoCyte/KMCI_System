@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using KMCI_System.Login; // ✅ Add to access Session class
+using MySql.Data.MySqlClient;
 
 namespace KMCI_System
 {
@@ -9,6 +10,17 @@ namespace KMCI_System
         public SalesForm()
         {
             InitializeComponent();
+
+            // ✅ Display logged-in user's name in greeting
+            if (!string.IsNullOrEmpty(Session.CurrentUserName))
+            {
+                lblGreeting.Text = $"Good Day, {Session.CurrentUserName}";
+            }
+            else
+            {
+                lblGreeting.Text = "Good Day, Employee";
+            }
+
             LoadUserControl(new SalesModule.ProjectManagement());
         }
 
@@ -40,15 +52,6 @@ namespace KMCI_System
             LoadUserControl(new SalesModule.CompanyManagement());
         }
 
-        private void btnSupplierManagement_Click(object sender, EventArgs e)
-        {
-            LoadUserControl(new SalesModule.SupplierManagement());
-        }
-
-        private void btnProductManagement_Click(object sender, EventArgs e)
-        {
-            LoadUserControl(new SalesModule.ProductManagementModule.ProductManagement());
-        }
         private void btnLogOut_Click(object sender, EventArgs e)
         {
             // mark current user inactive (if any), then return to login UI
@@ -69,6 +72,8 @@ namespace KMCI_System
 
                     // clear session
                     Session.CurrentUserEmail = null!;
+                    Session.CurrentUserName = null!; // ✅ Clear user name
+                    Session.CurrentUserDepartment = null!; // ✅ Clear department
                 }
             }
             catch

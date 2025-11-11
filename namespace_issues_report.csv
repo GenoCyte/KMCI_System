@@ -1,0 +1,6 @@
+"File","CurrentNamespace","ExpectedNamespace","Status"
+"SalesModule\SalesForm.cs","KMCI_System","KMCI_System.SalesModule","MISMATCH"
+"SalesModule\ProjectManagementModule\AddProjectForm.cs","KMCI_System.SalesModule.ProductManagement","KMCI_System.SalesModule.ProjectManagementModule","MISMATCH"
+"SalesModule\ProjectManagementModule\ProjectDetailsModule\CreateQuotation\KinglandQuotationPdfGenerator.cs","NOT FOUND","N/A","MISSING"
+"SalesModule\ProjectManagementModule\ProjectDetailsModule\ProjectDirectory\PurchaseRequestDetails.cs","KMCI_System.SalesModule","KMCI_System.SalesModule.ProjectManagementModule.ProjectDetailsModule.ProjectDirectory","MISMATCH"
+"SalesModule\SupplierManagementModule\SupplierManagement.cs","KMCI_System.SalesModule","KMCI_System.SalesModule.SupplierManagementModule","MISMATCH"

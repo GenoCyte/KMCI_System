@@ -1,9 +1,5 @@
 using Guna.UI2.WinForms;
 using MySql.Data.MySqlClient;
-using Mysqlx;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace KMCI_System.Login
 {
@@ -39,10 +35,10 @@ namespace KMCI_System.Login
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Right
             };
 
-                btnEdit.Location = new Point(
-                this.ClientSize.Width - btnEdit.Width - 150,
-                this.ClientSize.Height - btnEdit.Height - 24
-    );
+            btnEdit.Location = new Point(
+            this.ClientSize.Width - btnEdit.Width - 150,
+            this.ClientSize.Height - btnEdit.Height - 24
+);
 
             this.SizeChanged += (s, e) =>
             {
@@ -93,7 +89,7 @@ namespace KMCI_System.Login
             {
                 try
                 {
-                   remove();
+                    remove();
                 }
                 catch (Exception ex)
                 {
@@ -125,7 +121,7 @@ namespace KMCI_System.Login
                 ForeColor = Color.Black,
                 AutoSize = true,
                 Visible = true,
-                Location = new Point(24,30)
+                Location = new Point(24, 30)
             };
 
             lblSubtitle = new Guna2HtmlLabel()
@@ -269,7 +265,7 @@ namespace KMCI_System.Login
 
         }
 
-        public void remove ()
+        public void remove()
         {
             if (dgv.SelectedRows.Count == 0)
             {
@@ -333,4 +329,5 @@ namespace KMCI_System.Login
 
             LoadData();
         }
-    } } 
+    }
+}

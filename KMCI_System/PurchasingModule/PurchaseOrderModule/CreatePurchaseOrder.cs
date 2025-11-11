@@ -1,14 +1,6 @@
 ﻿using KMCI_System.PurchasingModule.PurchaseRequestModule;
+using KMCI_System.Login;
 using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace KMCI_System.PurchasingModule.PurchaseOrderModule
 {
@@ -33,6 +25,8 @@ namespace KMCI_System.PurchasingModule.PurchaseOrderModule
         private Label lblItemsHeader;
         private DataGridView dgvItems;
         private Button btnCreatePr;
+        private string currentUser = Session.CurrentUserName;
+        private string poNumber;
 
         public CreatePurchaseOrder(string vendorName, string prName, string projectCode)
         {
@@ -359,7 +353,7 @@ namespace KMCI_System.PurchasingModule.PurchaseOrderModule
                     return;
 
                 int purchaseOrderId = 0;
-                string poNumber = string.Empty;
+                poNumber = string.Empty;
 
                 using (MySqlConnection conn = new MySqlConnection(GetConnectionString()))
                 {
@@ -476,8 +470,8 @@ namespace KMCI_System.PurchasingModule.PurchaseOrderModule
 
                         // Insert into purchase_request table with pr_name
                         string insertQuery = @"
-                            INSERT INTO purchase_order (project_code, po_name, vendor_id, quotation_id, po_date, vendor_name, quantity, grand_total, status)
-                            VALUES (@project_code, @po_name, @vendor_id, @quotation_id, @po_date, @vendor_name, @quantity, @grand_total, @status)";
+                            INSERT INTO purchase_order (project_code, po_name, vendor_id, quotation_id, po_date, vendor_name, quantity, grand_total, status, created_by)
+                            VALUES (@project_code, @po_name, @vendor_id, @quotation_id, @po_date, @vendor_name, @quantity, @grand_total, @status, @created_by)";
 
                         using (MySqlCommand cmd = new MySqlCommand(insertQuery, conn, transaction))
                         {
@@ -490,6 +484,7 @@ namespace KMCI_System.PurchasingModule.PurchaseOrderModule
                             cmd.Parameters.AddWithValue("@quantity", totalQuantity);
                             cmd.Parameters.AddWithValue("@grand_total", grandTotal);
                             cmd.Parameters.AddWithValue("@status", "Pending");
+                            cmd.Parameters.AddWithValue("@created_by", currentUser);
 
                             int rowsAffected = cmd.ExecuteNonQuery();
 
@@ -499,8 +494,8 @@ namespace KMCI_System.PurchasingModule.PurchaseOrderModule
 
                                 // Insert all items into purchase_order_items table
                                 string insertItemsQuery = @"
-                                    INSERT INTO purchase_order_items (po_id, sku_upc, prod_name, brand, quantity, unit_price, sub_total)
-                                    VALUES (@po_id, @sku_upc, @prod_name, @brand, @quantity, @unit_price, @sub_total)";
+                                    INSERT INTO purchase_order_items (po_id, sku_upc, prod_name, brand, quantity, unit_price, sub_total, status)
+                                    VALUES (@po_id, @sku_upc, @prod_name, @brand, @quantity, @unit_price, @sub_total, @status)";
 
                                 foreach (DataGridViewRow row in dgvItems.Rows)
                                 {
@@ -518,6 +513,7 @@ namespace KMCI_System.PurchasingModule.PurchaseOrderModule
                                         string subTotalStr = row.Cells["SubTotal"].Value?.ToString()
                                             .Replace("₱", "").Replace(",", "").Trim() ?? "0";
                                         decimal subTotal = decimal.Parse(subTotalStr);
+                                        string status = "Pending";
 
                                         itemCmd.Parameters.AddWithValue("@po_id", purchaseOrderId);
                                         itemCmd.Parameters.AddWithValue("@sku_upc", skuUpc);
@@ -526,6 +522,7 @@ namespace KMCI_System.PurchasingModule.PurchaseOrderModule
                                         itemCmd.Parameters.AddWithValue("@quantity", quantity);
                                         itemCmd.Parameters.AddWithValue("@unit_price", unitPrice);
                                         itemCmd.Parameters.AddWithValue("@sub_total", subTotal);
+                                        itemCmd.Parameters.AddWithValue("@status", status);
 
                                         itemCmd.ExecuteNonQuery();
                                     }
@@ -601,7 +598,7 @@ namespace KMCI_System.PurchasingModule.PurchaseOrderModule
             SaveFileDialog saveDialog = new SaveFileDialog();
             saveDialog.Filter = "PDF Files|*.pdf";
             saveDialog.Title = "Export Quotation to PDF";
-            saveDialog.FileName = $"Quotation_KMCI_{projectCode}_{DateTime.Now:yyyyMMdd_HHmm}.pdf";
+            saveDialog.FileName = $"PO_KMCI_{poNumber}_{DateTime.Now:yyyyMMdd_HHmm}.pdf";
             saveDialog.DefaultExt = "pdf";
 
             if (saveDialog.ShowDialog() == DialogResult.OK)
