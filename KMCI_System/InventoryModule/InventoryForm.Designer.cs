@@ -34,6 +34,7 @@
             btnProjectManagement = new Button();
             btnInventoryManagement = new Button();
             btnProductManagement = new Button();
+            btnVendorManagement = new Button();
             panel1 = new Panel();
             btnLogOut = new Button();
             SuspendLayout();
@@ -156,6 +157,35 @@
             btnProductManagement.Cursor = Cursors.Hand;
             btnProductManagement.Click += btnProductManagement_Click;
             // 
+            // btnVendorManagement
+            // 
+            btnVendorManagement.BackColor = Color.FromArgb(0, 120, 215);
+            btnVendorManagement.FlatStyle = FlatStyle.Flat;
+            btnVendorManagement.FlatAppearance.BorderSize = 2;
+            btnVendorManagement.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnVendorManagement.ForeColor = Color.White;
+            btnVendorManagement.MouseEnter += (s, e) =>
+            {
+                btnVendorManagement.BackColor = Color.White;
+                btnVendorManagement.FlatAppearance.BorderColor = Color.FromArgb(0, 120, 215);
+                btnVendorManagement.ForeColor = Color.FromArgb(0, 120, 215);
+            };
+
+            btnVendorManagement.MouseLeave += (s, e) =>
+            {
+                btnVendorManagement.BackColor = Color.FromArgb(0, 120, 215);
+                btnVendorManagement.FlatAppearance.BorderColor = Color.White;
+                btnVendorManagement.ForeColor = Color.White;
+            };
+            btnVendorManagement.Location = new Point(12, 300);
+            btnVendorManagement.Name = "btnProductManagement";
+            btnVendorManagement.Size = new Size(170, 40);
+            btnVendorManagement.TabIndex = 5;
+            btnVendorManagement.Text = "Vendor Management";
+            btnVendorManagement.UseVisualStyleBackColor = false;
+            btnVendorManagement.Cursor = Cursors.Hand;
+            btnVendorManagement.Click += btnVendorManagement_Click;
+            // 
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -215,6 +245,7 @@
             Controls.Add(btnProductManagement);
             Controls.Add(btnInventoryManagement);
             Controls.Add(btnProjectManagement);
+            Controls.Add(btnVendorManagement);
             Controls.Add(lblModuleName);
             Controls.Add(lblGreeting);
             Controls.Add(lblTitle);
@@ -233,6 +264,7 @@
         private Button btnProjectManagement;
         private Button btnInventoryManagement;
         private Button btnProductManagement;
+        private Button btnVendorManagement;
         public Panel panel1;
         private Button btnLogOut;
     }

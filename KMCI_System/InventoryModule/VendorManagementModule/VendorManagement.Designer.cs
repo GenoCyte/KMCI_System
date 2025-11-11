@@ -1,8 +1,6 @@
-﻿using static System.Windows.Forms.LinkLabel;
-
-namespace KMCI_System.PurchasingModule
+﻿namespace KMCI_System.LogisticsModule
 {
-    partial class ProjectManagement
+    partial class VendorManagement
     {
         /// <summary> 
         /// Required designer variable.
@@ -34,18 +32,18 @@ namespace KMCI_System.PurchasingModule
             line1 = new Label();
             header2 = new Label();
             subHeader = new Label();
-            btnAddCompany = new Button();
+            btnAddVendor = new Button();
             SuspendLayout();
             // 
             // header
             // 
             header.AutoSize = true;
-            header.Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);  
+            header.Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);
             header.Location = new Point(15, 15);
             header.Name = "label1";
             header.Size = new Size(118, 15);
             header.TabIndex = 1;
-            header.Text = "Projects";
+            header.Text = "Vendor";
             //
             // line1
             //
@@ -64,7 +62,7 @@ namespace KMCI_System.PurchasingModule
             header2.Name = "label1";
             header2.Size = new Size(118, 15);
             header2.TabIndex = 1;
-            header2.Text = "Project Management";
+            header2.Text = "Vendor Management";
             // 
             // subHeader
             // 
@@ -75,7 +73,20 @@ namespace KMCI_System.PurchasingModule
             subHeader.Name = "label1";
             subHeader.Size = new Size(118, 15);
             subHeader.TabIndex = 1;
-            subHeader.Text = "Manage Projects";
+            subHeader.Text = "Manage Vendor, Address, and Proponents";
+            //
+            // btnAddCompany
+            //
+            btnAddVendor.BackColor = Color.FromArgb(0, 120, 215);
+            btnAddVendor.ForeColor = Color.White;
+            btnAddVendor.FlatStyle = FlatStyle.Flat;
+            btnAddVendor.Location = new Point(15, 120);
+            btnAddVendor.Name = "btnAddCompany";
+            btnAddVendor.Size = new Size(120, 30);
+            btnAddVendor.TabIndex = 3;
+            btnAddVendor.Text = "Add Vendor";
+            btnAddVendor.Anchor = AnchorStyles.Right | AnchorStyles.Top;
+            btnAddVendor.Click += btnAddVendor_Click;
             // 
             // ProjectManagement
             // 
@@ -85,6 +96,7 @@ namespace KMCI_System.PurchasingModule
             Controls.Add(line1);
             Controls.Add(header2);
             Controls.Add(subHeader);
+            Controls.Add(btnAddVendor);
             Name = "ProjectManagement";
             ResumeLayout(false);
             PerformLayout();
@@ -97,6 +109,6 @@ namespace KMCI_System.PurchasingModule
         private Label line1;
         private Label header2;
         private Label subHeader;
-        private Button btnAddCompany;
+        private Button btnAddVendor;
     }
 }

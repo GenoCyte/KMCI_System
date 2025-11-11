@@ -219,6 +219,7 @@ namespace KMCI_System.PurchasingModule
                 string query = @"
                 SELECT project_code, company_name, description, budget_allocation
                 FROM project_list
+                WHERE status != 'Completed'
                 ORDER BY id DESC";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))

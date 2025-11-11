@@ -9,8 +9,6 @@ namespace KMCI_System.SalesModule
         private int companyId;
         private Label lblTin;
         private TextBox txtTin;
-        private Label lblRoles;
-        private FlowLayoutPanel pnlRoles; // Changed from ListBox to FlowLayoutPanel
         private Label lblHeaderAddress;
         private Button btnAddAddress;
         private DataGridView dgvAddresses;
@@ -78,29 +76,6 @@ namespace KMCI_System.SalesModule
             Controls.Add(txtTin);
 
             xposition += 300;
-
-            lblRoles = new Label
-            {
-                Text = "Roles:",
-                Location = new Point(xposition, yposition),
-                Size = new Size(120, 20),
-                Font = new Font("Segoe UI", 10F)
-            };
-            Controls.Add(lblRoles);
-
-            pnlRoles = new FlowLayoutPanel
-            {
-                Location = new Point(xposition, yposition + 20),
-                Size = new Size(400, 60), // Wider to accommodate horizontal layout
-                FlowDirection = FlowDirection.LeftToRight, // Arrange items left to right
-                WrapContents = true, // Wrap to next line if needed
-                AutoScroll = false,
-                BorderStyle = BorderStyle.FixedSingle,
-                BackColor = Color.White,
-                Padding = new Padding(5)
-            };
-            Controls.Add(pnlRoles);
-
             yposition += 80;
 
             // Address Section
@@ -326,51 +301,6 @@ namespace KMCI_System.SalesModule
                         {
                             companyId = Convert.ToInt32(reader["id"]);
                             txtTin.Text = reader["tin"].ToString();
-                        }
-                    }
-                }
-
-                // Get all roles for this company and display horizontally
-                pnlRoles.Controls.Clear();
-                string roleQuery = "SELECT role FROM company_role WHERE company_id = @companyId ORDER BY role";
-                using (MySqlCommand cmd = new MySqlCommand(roleQuery, conn))
-                {
-                    cmd.Parameters.AddWithValue("@companyId", companyId);
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        bool hasRoles = false;
-                        while (reader.Read())
-                        {
-                            hasRoles = true;
-
-                            // Create a label for each role with badge-like styling
-                            Label roleLabel = new Label
-                            {
-                                Text = reader["role"].ToString(),
-                                AutoSize = true,
-                                Padding = new Padding(8, 4, 8, 4),
-                                Margin = new Padding(3),
-                                BackColor = Color.FromArgb(230, 240, 250),
-                                ForeColor = Color.FromArgb(0, 120, 215),
-                                Font = new Font("Segoe UI", 9F),
-                                BorderStyle = BorderStyle.FixedSingle
-                            };
-
-                            pnlRoles.Controls.Add(roleLabel);
-                        }
-
-                        // If no roles found, show a message
-                        if (!hasRoles)
-                        {
-                            Label noRolesLabel = new Label
-                            {
-                                Text = "No roles assigned",
-                                AutoSize = true,
-                                Padding = new Padding(5),
-                                ForeColor = Color.Gray,
-                                Font = new Font("Segoe UI", 9F, FontStyle.Italic)
-                            };
-                            pnlRoles.Controls.Add(noRolesLabel);
                         }
                     }
                 }

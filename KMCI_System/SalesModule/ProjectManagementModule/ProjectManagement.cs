@@ -188,7 +188,7 @@ namespace KMCI_System.SalesModule
             if (e.ColumnIndex == dgvProject.Columns["Actions"].Index && e.RowIndex >= 0)
             {
                 var result = MessageBox.Show(
-                    "Are you sure you want to delete this quotation?",
+                    "Are you sure you want to delete this project?",
                     "Confirm Delete",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
@@ -196,37 +196,46 @@ namespace KMCI_System.SalesModule
 
                 if (result == DialogResult.Yes)
                 {
-                    String companyName = dgvProject.Rows[e.RowIndex].Cells["ProjectCode"].Value.ToString();
-                    DeleteProject(companyName);
+                    String projectCode = dgvProject.Rows[e.RowIndex].Cells["ProjectCode"].Value.ToString();
+                    DeleteProject(projectCode);
                     dgvProject.Rows.RemoveAt(e.RowIndex);
 
                     // Hide details panel when row is deleted
                     detailsPanel.Visible = false;
 
-                    MessageBox.Show("Quotation deleted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Project deleted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
 
         private void LoadProject()
         {
-            dgvProject.Rows.Clear();  // Add this line to clear existing rows first
+            dgvProject.Rows.Clear();
 
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
                 string query = @"
-                SELECT project_code, company_name, description, budget_allocation
-                FROM project_list
-                WHERE status != 'Completed'
-                ORDER BY id DESC";
+                    SELECT project_code, company_name, description, budget_allocation, status
+                    FROM project_list
+                    WHERE status != 'Completed'
+                    ORDER BY id DESC";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
+                        // Double-check status in code as well
+                        string status = reader["status"]?.ToString()?.Trim().ToLower() ?? "";
+
+                        // Skip if status is completed or complete
+                        if (status == "completed" || status == "complete")
+                        {
+                            continue;
+                        }
+
                         decimal budgetAllocation = Convert.ToDecimal(reader["budget_allocation"]);
                         string displayValue = budgetAllocation == 0 ? "On Approval" : "₱" + budgetAllocation.ToString("N2");
 
@@ -241,21 +250,21 @@ namespace KMCI_System.SalesModule
             }
 
             AdjustDataGridViewHeight();
-            dgvProject.ClearSelection();  // Optional: prevents first row from being selected
+            dgvProject.ClearSelection();
         }
 
-        private void DeleteProject(String companyName)
+        private void DeleteProject(String projectCode)
         {
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
 
-                // Delete items
-                string deleteItems = "DELETE FROM project_list WHERE project_code = @id";
-                using (MySqlCommand cmd = new MySqlCommand(deleteItems, conn))
+                // Delete project
+                string deleteQuery = "DELETE FROM project_list WHERE project_code = @projectCode";
+                using (MySqlCommand cmd = new MySqlCommand(deleteQuery, conn))
                 {
-                    cmd.Parameters.AddWithValue("@id", companyName);
+                    cmd.Parameters.AddWithValue("@projectCode", projectCode);
                     cmd.ExecuteNonQuery();
                 }
             }

@@ -1,8 +1,6 @@
-﻿using static System.Windows.Forms.LinkLabel;
-
-namespace KMCI_System.PurchasingModule
+﻿namespace KMCI_System.LogisticsModule
 {
-    partial class ProjectManagement
+    partial class VendorDetails
     {
         /// <summary> 
         /// Required designer variable.
@@ -31,16 +29,15 @@ namespace KMCI_System.PurchasingModule
         private void InitializeComponent()
         {
             header = new Label();
+            btnBack = new Button();
             line1 = new Label();
             header2 = new Label();
-            subHeader = new Label();
-            btnAddCompany = new Button();
             SuspendLayout();
             // 
             // header
             // 
             header.AutoSize = true;
-            header.Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);  
+            header.Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);
             header.Location = new Point(15, 15);
             header.Name = "label1";
             header.Size = new Size(118, 15);
@@ -64,39 +61,40 @@ namespace KMCI_System.PurchasingModule
             header2.Name = "label1";
             header2.Size = new Size(118, 15);
             header2.TabIndex = 1;
-            header2.Text = "Project Management";
-            // 
-            // subHeader
-            // 
-            subHeader.AutoSize = true;
-            subHeader.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            subHeader.ForeColor = SystemColors.GrayText;
-            subHeader.Location = new Point(15, 120);
-            subHeader.Name = "label1";
-            subHeader.Size = new Size(118, 15);
-            subHeader.TabIndex = 1;
-            subHeader.Text = "Manage Projects";
+            header2.Text = "Company Details";
+            //
+            // btnBack
+            //
+            btnBack.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnBack.BackColor = Color.FromArgb(0, 120, 215);
+            btnBack.ForeColor = Color.White;
+            btnBack.FlatStyle = FlatStyle.Flat;
+            btnBack.Location = new Point(540, 15);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(75, 30);
+            btnBack.TabIndex = 3;
+            btnBack.Text = "Back";
+            btnBack.Click += btnBack_Click;
+            btnBack.Anchor = AnchorStyles.Top;
             // 
             // ProjectManagement
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(header);
+            Controls.Add(btnBack);
             Controls.Add(line1);
             Controls.Add(header2);
-            Controls.Add(subHeader);
-            Name = "ProjectManagement";
+            Name = "CompanyDetails";
             ResumeLayout(false);
             PerformLayout();
         }
 
-
         #endregion
 
         private Label header;
+        private Button btnBack;
         private Label line1;
         private Label header2;
-        private Label subHeader;
-        private Button btnAddCompany;
     }
 }

@@ -76,19 +76,6 @@ namespace KMCI_System.LogisticsModule
             subHeader.Size = new Size(118, 15);
             subHeader.TabIndex = 1;
             subHeader.Text = "Manage Projects";
-            //
-            // btnAddCompany
-            //
-            btnAddCompany.BackColor = Color.FromArgb(0, 120, 215);
-            btnAddCompany.ForeColor = Color.White;
-            btnAddCompany.FlatStyle = FlatStyle.Flat;
-            btnAddCompany.Location = new Point(15, 120);
-            btnAddCompany.Name = "btnAddCompany";
-            btnAddCompany.Size = new Size(120, 30);
-            btnAddCompany.TabIndex = 3;
-            btnAddCompany.Text = "Add Project";
-            btnAddCompany.Anchor = AnchorStyles.Right | AnchorStyles.Top;
-            btnAddCompany.Click += btnAddCompany_Click;
             // 
             // ProjectManagement
             // 
@@ -98,7 +85,6 @@ namespace KMCI_System.LogisticsModule
             Controls.Add(line1);
             Controls.Add(header2);
             Controls.Add(subHeader);
-            Controls.Add(btnAddCompany);
             Name = "ProjectManagement";
             ResumeLayout(false);
             PerformLayout();

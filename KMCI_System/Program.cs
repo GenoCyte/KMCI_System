@@ -1,3 +1,6 @@
+using KMCI_System.AdminModule;
+using KMCI_System.InventoryModule;
+
 namespace KMCI_System
 {
     internal static class Program
@@ -11,7 +14,7 @@ namespace KMCI_System
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Login.Login());
+            Application.Run(new AdminForm());
         }
     }
 }

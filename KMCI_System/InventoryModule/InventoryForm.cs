@@ -58,6 +58,11 @@ namespace KMCI_System.InventoryModule
         {
             LoadUserControl(new ProductManagement());
         }
+
+        private void btnVendorManagement_Click(object sender, EventArgs e)
+        {
+            LoadUserControl(new VendorManagement());
+        }
         private void btnLogOut_Click(object sender, EventArgs e)
         {
             // mark current user inactive (if any), then return to login UI

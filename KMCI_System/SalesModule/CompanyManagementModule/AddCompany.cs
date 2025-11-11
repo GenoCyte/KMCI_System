@@ -11,13 +11,6 @@ namespace KMCI_System.SalesModule
         private Label lblCompanyName;
         private Label lblTIN;
 
-        // Roles
-        private GroupBox grpRoles;
-        private CheckBox chkClient;
-        private CheckBox chkVendor;
-        private CheckBox chkSupplier;
-        private CheckBox chkInternal;
-
         // Address
         private GroupBox grpAddress;
         private TextBox txtHouseNumber;
@@ -26,14 +19,14 @@ namespace KMCI_System.SalesModule
         private TextBox txtBarangay;
         private TextBox txtCity;
         private TextBox txtProvince;
-        private TextBox txtRegion;
+        private TextBox txtZip;
         private Label lblHouseNumber;
         private Label lblStreet;
         private Label lblSubdivision;
         private Label lblBarangay;
         private Label lblCity;
         private Label lblProvince;
-        private Label lblRegion;
+        private Label lblZip;
 
         // Proponents
         private GroupBox grpProponents;
@@ -125,54 +118,6 @@ namespace KMCI_System.SalesModule
             Controls.Add(txtTIN);
 
             yPosition += 70;
-
-            // Roles GroupBox
-            grpRoles = new GroupBox
-            {
-                Text = "Roles *",
-                Location = new Point(leftMargin, yPosition),
-                Size = new Size(controlWidth, 80),
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold)
-            };
-            Controls.Add(grpRoles);
-
-            chkClient = new CheckBox
-            {
-                Text = "Client",
-                Location = new Point(20, 30),
-                Size = new Size(120, 25),
-                Font = new Font("Segoe UI", 10F)
-            };
-            grpRoles.Controls.Add(chkClient);
-
-            chkVendor = new CheckBox
-            {
-                Text = "Vendor",
-                Location = new Point(160, 30),
-                Size = new Size(120, 25),
-                Font = new Font("Segoe UI", 10F)
-            };
-            grpRoles.Controls.Add(chkVendor);
-
-            chkSupplier = new CheckBox
-            {
-                Text = "Supplier",
-                Location = new Point(300, 30),
-                Size = new Size(120, 25),
-                Font = new Font("Segoe UI", 10F)
-            };
-            grpRoles.Controls.Add(chkSupplier);
-
-            chkInternal = new CheckBox
-            {
-                Text = "Internal",
-                Location = new Point(440, 30),
-                Size = new Size(120, 25),
-                Font = new Font("Segoe UI", 10F)
-            };
-            grpRoles.Controls.Add(chkInternal);
-
-            yPosition += 100;
 
             // Address GroupBox
             grpAddress = new GroupBox
@@ -304,22 +249,22 @@ namespace KMCI_System.SalesModule
             addressYPos += 63;
 
             // Region
-            lblRegion = new Label
+            lblZip = new Label
             {
-                Text = "Region:",
+                Text = "Zip:",
                 Location = new Point(addressLeftMargin, addressYPos),
                 Size = new Size(120, 20),
                 Font = new Font("Segoe UI", 9F)
             };
-            grpAddress.Controls.Add(lblRegion);
+            grpAddress.Controls.Add(lblZip);
 
-            txtRegion = new TextBox
+            txtZip = new TextBox
             {
                 Location = new Point(addressLeftMargin, addressYPos + 23),
                 Size = new Size(590, 25),
                 Font = new Font("Segoe UI", 9F)
             };
-            grpAddress.Controls.Add(txtRegion);
+            grpAddress.Controls.Add(txtZip);
 
             yPosition += 370;
 
@@ -495,14 +440,8 @@ namespace KMCI_System.SalesModule
                 return;
             }
 
-            if (!chkClient.Checked && !chkVendor.Checked && !chkSupplier.Checked && !chkInternal.Checked)
-            {
-                MessageBox.Show("Please select at least one role.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             if (string.IsNullOrWhiteSpace(txtBarangay.Text) || string.IsNullOrWhiteSpace(txtCity.Text) ||
-                string.IsNullOrWhiteSpace(txtProvince.Text) || string.IsNullOrWhiteSpace(txtRegion.Text))
+                string.IsNullOrWhiteSpace(txtProvince.Text) || string.IsNullOrWhiteSpace(txtZip.Text))
             {
                 MessageBox.Show("Please complete all required address fields (Barangay, City, Province, Region).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -552,34 +491,6 @@ namespace KMCI_System.SalesModule
                             companyId = Convert.ToInt32(cmd.ExecuteScalar());
                         }
 
-                        // Insert roles
-                        var roleCheckboxes = new[]
-                        {
-                            new { Checkbox = chkSupplier, RoleName = "Supplier" },
-                            new { Checkbox = chkInternal, RoleName = "Internal" },
-                            new { Checkbox = chkClient, RoleName = "Client" },
-                            new { Checkbox = chkVendor, RoleName = "Vendor" }
-                        };
-
-                        string roleQuery = @"
-                            INSERT INTO company_role
-                            (company_id, role)
-                            VALUES 
-                            (@companyId, @role)";
-
-                        foreach (var item in roleCheckboxes)
-                        {
-                            if (item.Checkbox.Checked)
-                            {
-                                using (MySqlCommand cmd = new MySqlCommand(roleQuery, conn, transaction))
-                                {
-                                    cmd.Parameters.AddWithValue("@companyId", companyId);
-                                    cmd.Parameters.AddWithValue("@role", item.RoleName);
-                                    cmd.ExecuteNonQuery();
-                                }
-                            }
-                        }
-
                         // Insert address
                         string addressQuery = @"
                             INSERT INTO company_address 
@@ -596,7 +507,7 @@ namespace KMCI_System.SalesModule
                             cmd.Parameters.AddWithValue("@barangay", txtBarangay.Text.Trim());
                             cmd.Parameters.AddWithValue("@city", txtCity.Text.Trim());
                             cmd.Parameters.AddWithValue("@province", txtProvince.Text.Trim());
-                            cmd.Parameters.AddWithValue("@region", txtRegion.Text.Trim());
+                            cmd.Parameters.AddWithValue("@region", txtZip.Text.Trim());
                             cmd.ExecuteNonQuery();
                         }
 

@@ -1,15 +1,16 @@
-﻿using MySql.Data.MySqlClient;
+﻿using KMCI_System.InventoryModule;
+using MySql.Data.MySqlClient;
 
-namespace KMCI_System.SalesModule
+namespace KMCI_System.LogisticsModule
 {
-    public partial class CompanyManagement : UserControl
+    public partial class VendorManagement : UserControl
     {
         private DataGridView dgvCompany;
         private Panel detailsPanel;
         private ProjectOverview projectDetailsControl;
         private UserControl currentUserControl;
 
-        public CompanyManagement()
+        public VendorManagement()
         {
             InitializeComponent();
             //SetupDetailsPanel();
@@ -17,9 +18,9 @@ namespace KMCI_System.SalesModule
             LoadCompany();
         }
 
-        private void btnAddCompany_Click(object sender, EventArgs e)
+        private void btnAddVendor_Click(object sender, EventArgs e)
         {
-            AddCompany addCompanyForm = new AddCompany();
+            AddVendor addCompanyForm = new AddVendor();
             if (addCompanyForm.ShowDialog() == DialogResult.OK)
             {
                 LoadCompany();
@@ -42,16 +43,17 @@ namespace KMCI_System.SalesModule
                 ColumnHeadersHeight = 40,
                 ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing,
                 RowTemplate = { Height = 50 },
-                ScrollBars = ScrollBars.Both,
+                ScrollBars = ScrollBars.Vertical,
                 AllowUserToResizeRows = false,
                 AllowUserToResizeColumns = false,
                 EnableHeadersVisualStyles = false,
                 Margin = new Padding(0, 0, 0, 30) // Add 30px padding at the bottom
             };
 
-            dgvCompany.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            dgvCompany.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvCompany.Location = new Point(20, 160);
             dgvCompany.Width = this.ClientSize.Width - 40;
+            dgvCompany.Height = this.ClientSize.Height - 180; // Fixed height with space for scrolling
 
             // Style headers
             dgvCompany.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
@@ -74,12 +76,9 @@ namespace KMCI_System.SalesModule
             dgvCompany.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
 
             // Add columns
-            dgvCompany.Columns.Add("CompanyName", "Company Name");
-            dgvCompany.Columns.Add("Tin", "TIN");
-            dgvCompany.Columns.Add("Roles", "Roles");
-            dgvCompany.Columns.Add("Projects", "Projects");
-            dgvCompany.Columns.Add("Addresses", "Addresses");
-            dgvCompany.Columns.Add("Proponents", "Proponents");
+            dgvCompany.Columns.Add("VendorName", "Vendor Name");
+            dgvCompany.Columns.Add("Phone", "Phone");
+            dgvCompany.Columns.Add("Email", "Email");
 
             // Add delete button column
             DataGridViewButtonColumn btnDelete = new DataGridViewButtonColumn
@@ -96,87 +95,41 @@ namespace KMCI_System.SalesModule
             dgvCompany.Columns.Add(btnDelete);
 
             // Set column widths
-            dgvCompany.Columns["CompanyName"].MinimumWidth = 200;
-            dgvCompany.Columns["CompanyName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvCompany.Columns["CompanyName"].FillWeight = 100;
+            dgvCompany.Columns["VendorName"].MinimumWidth = 250;
+            dgvCompany.Columns["VendorName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvCompany.Columns["VendorName"].FillWeight = 100;
 
-            dgvCompany.Columns["Tin"].MinimumWidth = 150;
-            dgvCompany.Columns["Tin"].Width = 150;
+            dgvCompany.Columns["Phone"].MinimumWidth = 150;
+            dgvCompany.Columns["Phone"].Width = 180;
 
-            dgvCompany.Columns["Roles"].MinimumWidth = 80;
-            dgvCompany.Columns["Roles"].Width = 100;
-
-            dgvCompany.Columns["Projects"].MinimumWidth = 80;
-            dgvCompany.Columns["Projects"].Width = 100;
-            dgvCompany.Columns["Projects"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-            dgvCompany.Columns["Addresses"].MinimumWidth = 80;
-            dgvCompany.Columns["Addresses"].Width = 100;
-            dgvCompany.Columns["Addresses"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-            dgvCompany.Columns["Proponents"].MinimumWidth = 80;
-            dgvCompany.Columns["Proponents"].Width = 100;
-            dgvCompany.Columns["Proponents"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvCompany.Columns["Email"].MinimumWidth = 200;
+            dgvCompany.Columns["Email"].Width = 250;
 
             dgvCompany.Columns["Actions"].MinimumWidth = 80;
             dgvCompany.Columns["Actions"].Width = 80;
             dgvCompany.Columns["Actions"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 
-
             // Handle button click
             dgvCompany.CellContentClick += dgvCompany_CellContentClick;
             dgvCompany.CellClick += dgvCompany_CellClick;
-            dgvCompany.RowsAdded += DgvCompanys_RowsChanged;
-            dgvCompany.RowsRemoved += DgvCompanys_RowsChanged;
 
             this.Controls.Add(dgvCompany);
-        }
-
-        private void DgvCompanys_RowsChanged(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            AdjustDataGridViewHeight();
-        }
-
-        private void DgvCompanys_RowsChanged(object sender, DataGridViewRowsRemovedEventArgs e)
-        {
-            AdjustDataGridViewHeight();
-        }
-
-        private void AdjustDataGridViewHeight()
-        {
-            if (dgvCompany.Rows.Count == 0)
-            {
-                dgvCompany.Height = dgvCompany.ColumnHeadersHeight + 2;
-                return;
-            }
-
-            int totalHeight = dgvCompany.ColumnHeadersHeight;
-
-            foreach (DataGridViewRow row in dgvCompany.Rows)
-            {
-                totalHeight += row.Height;
-            }
-
-            // Add small buffer for borders
-            totalHeight += 2;
-
-            dgvCompany.Height = totalHeight;
         }
 
         private void dgvCompany_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && e.ColumnIndex != dgvCompany.Columns["Actions"].Index)
             {
-                String companyName = dgvCompany.Rows[e.RowIndex].Cells["CompanyName"].Value.ToString();
-                LoadUserControl(new CompanyDetails(companyName));
+                String vendorName = dgvCompany.Rows[e.RowIndex].Cells["VendorName"].Value.ToString();
+                LoadUserControl(new VendorDetails(vendorName));
             }
         }
 
         private void LoadUserControl(UserControl userControl)
         {
-            var salesForm = this.FindForm() as SalesForm;
+            var inventoryForm = this.FindForm() as InventoryForm;
             // Clear existing controls in panel
-            salesForm.panel1.Controls.Clear();
+            inventoryForm.panel1.Controls.Clear();
 
             // Dispose previous UserControl if exists
             if (currentUserControl != null)
@@ -187,7 +140,7 @@ namespace KMCI_System.SalesModule
             // Set the new UserControl
             currentUserControl = userControl;
             userControl.Dock = DockStyle.Fill; // Fill the entire panel
-            salesForm.panel1.Controls.Add(userControl);
+            inventoryForm.panel1.Controls.Add(userControl);
             userControl.BringToFront();
         }
 
@@ -196,7 +149,7 @@ namespace KMCI_System.SalesModule
             if (e.ColumnIndex == dgvCompany.Columns["Actions"].Index && e.RowIndex >= 0)
             {
                 var result = MessageBox.Show(
-                    "Are you sure you want to delete this company?",
+                    "Are you sure you want to delete this vendor?",
                     "Confirm Delete",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
@@ -204,21 +157,18 @@ namespace KMCI_System.SalesModule
 
                 if (result == DialogResult.Yes)
                 {
-                    String companyName = dgvCompany.Rows[e.RowIndex].Cells["CompanyName"].Value.ToString();
-                    DeleteCompany(companyName);
+                    String vendorName = dgvCompany.Rows[e.RowIndex].Cells["VendorName"].Value.ToString();
+                    DeleteCompany(vendorName);
                     dgvCompany.Rows.RemoveAt(e.RowIndex);
 
-                    // Hide details panel when row is deleted
-                    //detailsPanel.Visible = false;
-
-                    MessageBox.Show("Company deleted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Vendor deleted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
 
         private void LoadCompany()
         {
-            dgvCompany.Rows.Clear();  // Add this line to clear existing rows first
+            dgvCompany.Rows.Clear();
 
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
@@ -226,23 +176,11 @@ namespace KMCI_System.SalesModule
                 conn.Open();
                 string query = @"
                 SELECT 
-                    c.id,
-                    c.company_name,
-                    c.tin,
-                    COUNT(DISTINCT pj.id) AS project_count,
-                    COUNT(DISTINCT a.id) AS address_count,
-                    COUNT(DISTINCT p.id) AS proponent_count
-                FROM company_list AS c
-                LEFT JOIN project_list AS pj 
-                    ON c.id = pj.company_id
-                LEFT JOIN company_address AS a 
-                    ON c.id = a.company_id
-                LEFT JOIN proponents AS p 
-                    ON c.id = p.company_id
-                GROUP BY 
-                    c.id, 
-                    c.company_name, 
-                    c.tin;";
+                    vendor_name,
+                    vendor_phone,
+                    vendor_email
+                FROM vendor_list
+                ORDER BY vendor_name ASC;";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -250,32 +188,28 @@ namespace KMCI_System.SalesModule
                     while (reader.Read())
                     {
                         dgvCompany.Rows.Add(
-                            reader["company_name"].ToString(),
-                            reader["tin"].ToString(),
-                            reader["project_count"].ToString(),
-                            reader["address_count"].ToString(),
-                            reader["proponent_count"].ToString()
+                            reader["vendor_name"].ToString(),
+                            reader["vendor_phone"].ToString(),
+                            reader["vendor_email"].ToString()
                         );
                     }
                 }
             }
 
-            AdjustDataGridViewHeight();
-            dgvCompany.ClearSelection();  // Optional: prevents first row from being selected
+            dgvCompany.ClearSelection();
         }
 
-        private void DeleteCompany(String companyName)
+        private void DeleteCompany(String vendorName)
         {
             string connString = "server=localhost;database=kmci_database;uid=root;pwd=;";
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
 
-                // Delete items
-                string deleteItems = "DELETE FROM company_list WHERE company_name = @company_name";
-                using (MySqlCommand cmd = new MySqlCommand(deleteItems, conn))
+                string deleteQuery = "DELETE FROM vendor_list WHERE vendor_name = @vendor_name";
+                using (MySqlCommand cmd = new MySqlCommand(deleteQuery, conn))
                 {
-                    cmd.Parameters.AddWithValue("@company_name", companyName);
+                    cmd.Parameters.AddWithValue("@vendor_name", vendorName);
                     cmd.ExecuteNonQuery();
                 }
             }

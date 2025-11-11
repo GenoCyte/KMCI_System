@@ -36,8 +36,8 @@ namespace KMCI_System.InventoryModule.InventoryManagementModule
             lblHeader = new Label
             {
                 Text = "Update Inventory - Purchase Order Status",
-                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
-                Location = new Point(leftMargin, yPos),
+                Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point, 0),
+                Location = new Point(15, 15),
                 AutoSize = true
             };
             Controls.Add(lblHeader);
