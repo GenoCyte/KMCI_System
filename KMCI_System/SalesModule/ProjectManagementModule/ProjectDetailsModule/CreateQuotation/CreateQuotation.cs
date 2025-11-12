@@ -1754,7 +1754,6 @@ namespace KMCI_System.SalesModule
 
         private void ExportToPdf(int quotationId)
         {
-
             // Setup save dialog
             SaveFileDialog saveDialog = new SaveFileDialog();
             saveDialog.Filter = "PDF Files|*.pdf";
@@ -1774,17 +1773,36 @@ namespace KMCI_System.SalesModule
 
                     generator.GenerateQuotationPdf(quotationId, saveDialog.FileName, logoPath);
 
+                    // Ask if user wants to send email with the PDF
+                    var emailResult = MessageBox.Show(
+                        "PDF generated successfully! Would you like to send it via email to the client?",
+                        "Send Email",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (emailResult == DialogResult.Yes)
+                    {
+                        // Send email with PDF attachment
+                        bool emailSent = EmailSender.SendQuotationEmail(quotationId, saveDialog.FileName);
+                        
+                        if (emailSent)
+                        {
+                            MessageBox.Show("Quotation PDF has been emailed to the client successfully!", 
+                                "Email Sent", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+
                     // Ask if user wants to open the PDF
-                    var result = MessageBox.Show(
-                        "PDF generated successfully! Do you want to open it?",
-                        "Success",
+                    var openResult = MessageBox.Show(
+                        "Do you want to open the PDF?",
+                        "Open PDF",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information
                     );
 
-                    if (result == DialogResult.Yes)
+                    if (openResult == DialogResult.Yes)
                     {
-                        // Fix: Use ProcessStartInfo with UseShellExecute = true for .NET Core/.NET 5+
                         var processStartInfo = new System.Diagnostics.ProcessStartInfo
                         {
                             FileName = saveDialog.FileName,
@@ -1795,7 +1813,7 @@ namespace KMCI_System.SalesModule
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error generating PDF: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
